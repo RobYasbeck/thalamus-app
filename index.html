@@ -967,12 +967,17 @@ function renderBilling() {
   // Custos adicionais (customizações de soluções com note)
   const extrasEl = document.getElementById('billing-extras')
   const withExtras = myContracts
-    .map(c => SOLUTIONS.find(s => s.id === c.solution_id))
-    .filter(sol => sol && sol.pricing.note)
+    .map(c => ({ contract: c, sol: SOLUTIONS.find(s => s.id === c.solution_id) }))
+    .filter(({ sol }) => sol && sol.pricing.note)
   if (!withExtras.length) {
     extrasEl.innerHTML = '<div class="billing-empty">Sem custos adicionais.</div>'
   } else {
-    extrasEl.innerHTML = withExtras.map(sol => `
+    extrasEl.innerHTML = withExtras.map(({ sol, contract }) => {
+      const extra = contract.extra_monthly ?? 0
+      const valueHtml = extra > 0
+        ? `<div class="billing-row-value extra">R$ ${extra.toLocaleString('pt-BR')}/mês</div>`
+        : `<div class="billing-row-value">R$ 0</div>`
+      return `
       <div class="billing-row">
         <div class="billing-row-left">
           <div>
@@ -980,8 +985,9 @@ function renderBilling() {
             <div class="billing-row-sub">${sol.pricing.note}</div>
           </div>
         </div>
-        <div class="billing-row-value extra">sob consulta</div>
-      </div>`).join('')
+        ${valueHtml}
+      </div>`
+    }).join('')
   }
 
   // Implantação
