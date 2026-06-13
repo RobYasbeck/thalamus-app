@@ -899,6 +899,8 @@ function calcProrata(contract, monthlyTotal) {
   } else {
     nextBilling = new Date(activated.getFullYear(), activated.getMonth() + 1, billingDay)
   }
+  // Primeiro vencimento já passou — pro-rata não se aplica mais
+  if (new Date() >= nextBilling) return null
   const daysUntil = Math.round((nextBilling - activated) / 86400000)
   return Math.round((daysUntil / daysInMonth) * monthlyTotal * 100) / 100
 }
@@ -1084,19 +1086,35 @@ function renderBilling() {
     const monthly = sol.pricing.monthly + (c.extra_monthly ?? 0)
     return sum + (calcProrata(c, monthly) ?? 0)
   }, 0)
+
+  // IDs de contratos ainda no período pro-rata (primeiro vencimento ainda não chegou)
+  const prorataActiveIds = new Set(
+    prorataContracts
+      .filter(c => { const sol = SOLUTIONS.find(s => s.id === c.solution_id); return sol && calcProrata(c, sol.pricing.monthly + (c.extra_monthly ?? 0)) !== null })
+      .map(c => c.solution_id)
+  )
+  // Mensalidade do mês 0 exclui contratos ainda em pro-rata (eles pagam só a pro-rata)
+  const totalMonthlyMonth0 = active
+    .filter(c => !prorataActiveIds.has(c.solution_id))
+    .reduce((sum, c) => {
+      const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+      return sol ? sum + sol.pricing.monthly + (c.extra_monthly ?? 0) : sum
+    }, 0)
+
   const forecastEl = document.getElementById('billing-forecast')
   forecastEl.innerHTML = [0, 1, 2].map(offset => {
     const d = new Date(now.getFullYear(), now.getMonth() + offset, 1)
     const monthName = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
     const isFirst = offset === 0
+    const monthlyThisOffset = isFirst ? totalMonthlyMonth0 : totalMonthly
     const setupThisMonth = isFirst ? totalSetup : 0
     const prorataThisMonth = isFirst ? totalProrata : 0
-    const total = totalMonthly + setupThisMonth + prorataThisMonth
+    const total = monthlyThisOffset + setupThisMonth + prorataThisMonth
 
     return `
       <div class="forecast-card">
         <div class="forecast-month">${monthName}</div>
-        <div class="forecast-line"><span>Mensalidades</span><strong>R$ ${totalMonthly.toLocaleString('pt-BR')}</strong></div>
+        ${monthlyThisOffset ? `<div class="forecast-line"><span>Mensalidades</span><strong>R$ ${monthlyThisOffset.toLocaleString('pt-BR')}</strong></div>` : ''}
         ${isFirst && totalSetup ? `<div class="forecast-line"><span>Implantação</span><strong>R$ ${totalSetup.toLocaleString('pt-BR')}</strong></div>` : ''}
         ${isFirst && totalProrata ? `<div class="forecast-line"><span>Pro-rata</span><strong>R$ ${totalProrata.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong></div>` : ''}
         <hr class="forecast-divider">
