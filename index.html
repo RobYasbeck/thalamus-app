@@ -15,31 +15,100 @@
       --green: #10b981; --blue: #3b82f6; --yellow: #f59e0b;
     }
 
-    /* ── LOGIN ── */
-    #login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(ellipse at 60% 40%, #1e1040 0%, #0f172a 70%); }
-    .login-card { background: var(--card); border-radius: 20px; padding: 40px; width: 100%; max-width: 380px; border: 1px solid var(--border); box-shadow: 0 24px 64px rgba(0,0,0,.4); }
-    .login-logo-wrap { display: flex; justify-content: center; margin-bottom: 8px; }
-    .login-logo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
-    .login-logo-fallback { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; font-size: 32px; }
-    .login-h { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-    .login-s { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 28px; }
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
-    input[type=email], input[type=password] {
-      width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--text); font-size: 14px; outline: none;
-      transition: border-color 0.15s; font-family: inherit;
+    /* ── LOGIN IMERSIVO ── */
+    #login-screen {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      height: 100vh; overflow: hidden; background: #060914;
     }
-    input:focus { border-color: var(--accent); }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
-    .btn-primary:disabled { opacity: 0.6; cursor: default; }
-    .btn-secondary { background: var(--card2); color: var(--text); }
-    .btn-secondary:hover { background: #475569; }
+
+    /* fundo animado */
+    .login-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(109,40,217,.25) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(79,70,229,.2) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 50% at 60% 80%, rgba(16,185,129,.08) 0%, transparent 50%),
+        #060914;
+    }
+
+    /* orbs flutuantes */
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: .55; z-index: 0;
+      animation: float linear infinite;
+    }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #7c3aed 0%, transparent 70%); top: -120px; left: -80px; animation-duration: 18s; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #4f46e5 0%, transparent 70%); bottom: -100px; right: -60px; animation-duration: 22s; animation-delay: -8s; }
+    .orb-3 { width: 280px; height: 280px; background: radial-gradient(circle, #10b981 0%, transparent 70%); top: 55%; left: 60%; animation-duration: 15s; animation-delay: -4s; opacity: .25; }
+    @keyframes float {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(30px, -40px) scale(1.05); }
+      66%  { transform: translate(-20px, 20px) scale(.97); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* texto fantasma de fundo */
+    .login-ghost {
+      position: absolute; z-index: 0; font-size: clamp(100px, 18vw, 220px);
+      font-weight: 900; letter-spacing: -.02em; color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,.04);
+      user-select: none; white-space: nowrap;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+
+    /* grade sutil */
+    .login-grid {
+      position: absolute; inset: 0; z-index: 0; opacity: .04;
+      background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* card glass */
+    .login-card {
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 24px; padding: 44px 40px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    .login-logo-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+    .login-logo { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
+    .login-logo-fallback { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+
+    .login-h {
+      text-align: center; font-size: 28px; font-weight: 800;
+      letter-spacing: -.02em; color: #fff; margin-bottom: 4px;
+    }
+    .login-s { text-align: center; color: rgba(255,255,255,.4); font-size: 13px; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.4); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
+
+    input[type=email], input[type=password] {
+      width: 100%; padding: 12px 16px;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px; color: #fff; font-size: 14px; outline: none;
+      transition: border-color 0.2s, background 0.2s; font-family: inherit;
+    }
+    input[type=email]::placeholder, input[type=password]::placeholder { color: rgba(255,255,255,.25); }
+    input:focus { border-color: rgba(124,58,237,.7); background: rgba(124,58,237,.08); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 13px 18px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; letter-spacing: .01em; }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      color: #fff; box-shadow: 0 4px 24px rgba(124,58,237,.4);
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(124,58,237,.5); }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: default; }
+    .btn-secondary { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,.12); }
     .btn-full { width: 100%; }
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-    .err-box { color: #f87171; font-size: 12px; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+    .err-box { color: #f87171; font-size: 12px; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); border-radius: 10px; padding: 10px 14px; margin-top: 10px; }
 
     /* ── APP ── */
     #app { display: none; height: 100vh; }
@@ -191,6 +260,13 @@
 
 <!-- LOGIN -->
 <div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="login-ghost">THALAMUS</div>
+
   <div class="login-card">
     <div class="login-logo-wrap">
       <img src="thalamus.png" alt="Thalamus" class="login-logo" id="login-img"
@@ -208,7 +284,7 @@
       <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
     </div>
     <div id="l-err" class="err-box hidden"></div>
-    <button class="btn btn-primary btn-full" style="margin-top:16px" id="l-btn" onclick="doLogin()">Entrar</button>
+    <button class="btn btn-primary btn-full" style="margin-top:20px" id="l-btn" onclick="doLogin()">Acessar plataforma</button>
   </div>
 </div>
 
