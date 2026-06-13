@@ -260,6 +260,56 @@
     .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-state p { font-size: 14px; margin-bottom: 20px; }
 
+    /* ── BILLING ── */
+    .billing-summary {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+    }
+    .bill-stat {
+      background: rgba(255,255,255,.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; padding: 20px 22px;
+    }
+    .bill-stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .bill-stat-value { font-size: 26px; font-weight: 700; color: #fff; }
+    .bill-stat-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .billing-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 4px;
+    }
+    .billing-block-title {
+      font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: 12px;
+    }
+    .billing-row {
+      display: flex; align-items: center; justify-content: space-between; padding: 13px 16px;
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px; margin-bottom: 8px;
+    }
+    .billing-row:last-child { margin-bottom: 0; }
+    .billing-row-left  { display: flex; align-items: center; gap: 10px; }
+    .billing-row-name  { font-size: 13px; font-weight: 600; color: #fff; }
+    .billing-row-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .billing-row-value { font-size: 14px; font-weight: 700; color: var(--green); white-space: nowrap; }
+    .billing-row-value.setup { color: #f59e0b; }
+    .billing-row-value.extra { color: #94a3b8; }
+    .billing-total {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; border-radius: 10px; margin-top: 12px;
+      background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.25);
+    }
+    .billing-total-label { font-size: 13px; font-weight: 700; color: #a78bfa; }
+    .billing-total-value { font-size: 18px; font-weight: 700; color: #fff; }
+    .billing-empty { color: var(--muted); font-size: 13px; padding: 14px 0; }
+    .forecast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .forecast-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px; padding: 18px 20px;
+    }
+    .forecast-month   { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
+    .forecast-line    { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .forecast-line strong { color: #fff; font-weight: 600; }
+    .forecast-divider { border: none; border-top: 1px solid rgba(255,255,255,.06); margin: 10px 0; }
+    .forecast-total   { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
+    .forecast-total span:last-child { color: var(--green); }
+
     /* ── MODAL ── */
     .modal-bd { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100; align-items: center; justify-content: center; }
     .modal-bd.open { display: flex; }
@@ -360,6 +410,9 @@
         <button class="nav-item" id="nav-my-solutions" onclick="go('my-solutions')">
           <span class="nav-icon">⚡</span> Minhas Soluções
         </button>
+        <button class="nav-item" id="nav-billing" onclick="go('billing')">
+          <span class="nav-icon">💳</span> Faturamento
+        </button>
       </nav>
       <div class="sidebar-footer">
         <div class="company-name" id="company-name-tag"></div>
@@ -412,6 +465,35 @@
           <div class="page-sub">Escolha a solução ideal para o seu negócio e contrate com um clique.</div>
         </div>
         <div class="solutions-grid" id="catalog-grid"></div>
+      </section>
+
+      <!-- BILLING -->
+      <section id="sec-billing">
+        <div class="page-header">
+          <div class="page-title">Faturamento</div>
+          <div class="page-sub">Visão detalhada dos seus custos e previsão dos próximos meses.</div>
+        </div>
+
+        <!-- resumo do mês -->
+        <div class="billing-summary" id="billing-summary"></div>
+
+        <!-- breakdown -->
+        <div class="billing-grid">
+          <div>
+            <div class="billing-block-title">Soluções Contratadas</div>
+            <div id="billing-solutions"></div>
+          </div>
+          <div>
+            <div class="billing-block-title">Custos Adicionais</div>
+            <div id="billing-extras"></div>
+            <div class="billing-block-title" style="margin-top:20px">Implantação</div>
+            <div id="billing-setup"></div>
+          </div>
+        </div>
+
+        <!-- previsão 3 meses -->
+        <div class="billing-block-title" style="margin-top:28px;margin-bottom:16px">Previsão de Faturamento — Próximos 3 Meses</div>
+        <div id="billing-forecast"></div>
       </section>
 
       <!-- MY SOLUTIONS -->
@@ -596,6 +678,7 @@ async function go(sec) {
   if (sec === 'dashboard')    renderDashboard()
   if (sec === 'catalog')      renderCatalog()
   if (sec === 'my-solutions') renderMySolutions()
+  if (sec === 'billing')      renderBilling()
 }
 
 function renderDashboard() {
@@ -707,6 +790,141 @@ function renderMySolutions() {
             : '<span class="badge badge-pending">⟳ Em andamento</span>'}
         </div>
         <div class="timeline">${timelineHtml}</div>
+      </div>`
+  }).join('')
+}
+
+function renderBilling() {
+  const active = myContracts.filter(c => c.status === 'ativo')
+  const inProgress = myContracts.filter(c => c.status !== 'ativo')
+
+  const totalMonthly = active.reduce((sum, c) => {
+    const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+    return sum + (sol ? sol.pricing.monthly : 0)
+  }, 0)
+
+  const totalSetup = myContracts.reduce((sum, c) => {
+    const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+    return sum + (sol ? sol.pricing.setup : 0)
+  }, 0)
+
+  // Summary cards
+  document.getElementById('billing-summary').innerHTML = `
+    <div class="bill-stat">
+      <div class="bill-stat-label">Mensalidade atual</div>
+      <div class="bill-stat-value">R$ ${totalMonthly.toLocaleString('pt-BR')}</div>
+      <div class="bill-stat-sub">${active.length} solução${active.length !== 1 ? 'ões' : ''} ativa${active.length !== 1 ? 's' : ''}</div>
+    </div>
+    <div class="bill-stat">
+      <div class="bill-stat-label">Soluções contratadas</div>
+      <div class="bill-stat-value">${myContracts.length}</div>
+      <div class="bill-stat-sub">${inProgress.length} em implantação</div>
+    </div>
+    <div class="bill-stat">
+      <div class="bill-stat-label">Investimento total</div>
+      <div class="bill-stat-value">R$ ${(totalMonthly + totalSetup).toLocaleString('pt-BR')}</div>
+      <div class="bill-stat-sub">mensalidade + implantação</div>
+    </div>`
+
+  // Soluções ativas (mensalidade)
+  const solEl = document.getElementById('billing-solutions')
+  if (!active.length) {
+    solEl.innerHTML = '<div class="billing-empty">Nenhuma solução ativa ainda.</div>'
+  } else {
+    const rows = active.map(c => {
+      const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+      if (!sol) return ''
+      return `
+        <div class="billing-row">
+          <div class="billing-row-left">
+            <span>${sol.icon}</span>
+            <div>
+              <div class="billing-row-name">${sol.name}</div>
+              <div class="billing-row-sub">Ativo</div>
+            </div>
+          </div>
+          <div class="billing-row-value">R$ ${sol.pricing.monthly.toLocaleString('pt-BR')}/mês</div>
+        </div>`
+    }).join('')
+    const monthTotal = `
+      <div class="billing-total">
+        <span class="billing-total-label">Total mensal</span>
+        <span class="billing-total-value">R$ ${totalMonthly.toLocaleString('pt-BR')}</span>
+      </div>`
+    solEl.innerHTML = rows + monthTotal
+  }
+
+  // Custos adicionais (customizações de soluções com note)
+  const extrasEl = document.getElementById('billing-extras')
+  const withExtras = myContracts
+    .map(c => SOLUTIONS.find(s => s.id === c.solution_id))
+    .filter(sol => sol && sol.pricing.note)
+  if (!withExtras.length) {
+    extrasEl.innerHTML = '<div class="billing-empty">Sem custos adicionais.</div>'
+  } else {
+    extrasEl.innerHTML = withExtras.map(sol => `
+      <div class="billing-row">
+        <div class="billing-row-left">
+          <span>${sol.icon}</span>
+          <div>
+            <div class="billing-row-name">${sol.name}</div>
+            <div class="billing-row-sub">${sol.pricing.note}</div>
+          </div>
+        </div>
+        <div class="billing-row-value extra">sob consulta</div>
+      </div>`).join('')
+  }
+
+  // Implantação
+  const setupEl = document.getElementById('billing-setup')
+  if (!myContracts.length) {
+    setupEl.innerHTML = '<div class="billing-empty">Nenhuma solução contratada.</div>'
+  } else {
+    const setupRows = myContracts.map(c => {
+      const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+      if (!sol) return ''
+      const paid = c.status === 'ativo' || c.status === 'em_implantacao' || c.status === 'em_configuracao'
+      return `
+        <div class="billing-row">
+          <div class="billing-row-left">
+            <span>${sol.icon}</span>
+            <div>
+              <div class="billing-row-name">${sol.name}</div>
+              <div class="billing-row-sub">${paid ? 'Cobrado no início' : 'A cobrar'}</div>
+            </div>
+          </div>
+          <div class="billing-row-value setup">R$ ${sol.pricing.setup.toLocaleString('pt-BR')}</div>
+        </div>`
+    }).join('')
+    const setupTotal = `
+      <div class="billing-total">
+        <span class="billing-total-label">Total implantação</span>
+        <span class="billing-total-value">R$ ${totalSetup.toLocaleString('pt-BR')}</span>
+      </div>`
+    setupEl.innerHTML = setupRows + setupTotal
+  }
+
+  // Previsão 3 meses
+  const now = new Date()
+  const forecastEl = document.getElementById('billing-forecast')
+  forecastEl.innerHTML = [0, 1, 2].map(offset => {
+    const d = new Date(now.getFullYear(), now.getMonth() + offset, 1)
+    const monthName = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+    const isFirst = offset === 0
+
+    // No primeiro mês, inclui setup apenas das contratadas neste mês (simplificado: todas)
+    const setupThisMonth = isFirst ? totalSetup : 0
+    const extras = 0 // customizações são sob consulta, não estimamos
+    const total = totalMonthly + setupThisMonth
+
+    return `
+      <div class="forecast-card">
+        <div class="forecast-month">${monthName}</div>
+        <div class="forecast-line"><span>Mensalidades</span><strong>R$ ${totalMonthly.toLocaleString('pt-BR')}</strong></div>
+        ${isFirst ? `<div class="forecast-line"><span>Implantação</span><strong>R$ ${totalSetup.toLocaleString('pt-BR')}</strong></div>` : ''}
+        <div class="forecast-line"><span>Adicionais</span><strong>sob consulta</strong></div>
+        <hr class="forecast-divider">
+        <div class="forecast-total"><span>Estimado</span><span>R$ ${total.toLocaleString('pt-BR')}</span></div>
       </div>`
   }).join('')
 }
