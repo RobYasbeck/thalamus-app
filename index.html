@@ -948,7 +948,6 @@ function renderBilling() {
       return `
         <div class="billing-row">
           <div class="billing-row-left">
-            <span>${sol.icon}</span>
             <div>
               <div class="billing-row-name">${sol.name}</div>
               <div class="billing-row-sub">${extra > 0 ? `Base R$ ${sol.pricing.monthly} + adicional R$ ${extra.toLocaleString('pt-BR',{minimumFractionDigits:2})}` : 'Ativo'}</div>
@@ -976,7 +975,6 @@ function renderBilling() {
     extrasEl.innerHTML = withExtras.map(sol => `
       <div class="billing-row">
         <div class="billing-row-left">
-          <span>${sol.icon}</span>
           <div>
             <div class="billing-row-name">${sol.name}</div>
             <div class="billing-row-sub">${sol.pricing.note}</div>
@@ -997,7 +995,6 @@ function renderBilling() {
       if (c.charge_setup === false) return `
         <div class="billing-row">
           <div class="billing-row-left">
-            <span>${sol.icon}</span>
             <div>
               <div class="billing-row-name">${sol.name}</div>
               <div class="billing-row-sub">Implantação isenta</div>
@@ -1009,7 +1006,6 @@ function renderBilling() {
       return `
         <div class="billing-row">
           <div class="billing-row-left">
-            <span>${sol.icon}</span>
             <div>
               <div class="billing-row-name">${sol.name}</div>
               <div class="billing-row-sub">${paid ? 'Cobrado no início' : 'A cobrar'}</div>
@@ -1048,7 +1044,6 @@ function renderBilling() {
       return `
         <div class="billing-row">
           <div class="billing-row-left">
-            <span>${sol.icon}</span>
             <div>
               <div class="billing-row-name">${sol.name}</div>
               <div class="billing-row-sub">Vencimento dia ${billingDay} · próx. cobrança ${nextLabel}</div>
