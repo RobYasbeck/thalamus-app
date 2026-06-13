@@ -572,7 +572,7 @@ const SOLUTIONS = [
       'IA identifica e prioriza inadimplentes',
       'Cobrança automática multicanal (WhatsApp, e-mail, SMS)'
     ],
-    pricing: { monthly: 1200, setup: 800, note: 'Customizações cobradas à parte.' }
+    pricing: { monthly: 1200, setup: 800, note: 'Customizações cobradas à parte.', impl: 'Implantação em até 15 dias' }
   },
   {
     id: 'dashboard',
@@ -586,7 +586,7 @@ const SOLUTIONS = [
       'Criação de dashboards personalizados',
       'Acesso em tempo real via link seguro'
     ],
-    pricing: { monthly: 399, setup: 800, note: 'Customizações cobradas à parte.' }
+    pricing: { monthly: 399, setup: 800, note: 'Customizações cobradas à parte.', impl: 'Implantação em até 5 dias' }
   },
   {
     id: 'whatsapp-agent',
@@ -600,7 +600,7 @@ const SOLUTIONS = [
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
-    pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês' }
+    pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
   },
   {
     id: 'whatsapp-chatbot',
@@ -614,7 +614,7 @@ const SOLUTIONS = [
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
-    pricing: { monthly: 299, setup: 400, note: 'Contatos ilimitados' }
+    pricing: { monthly: 299, setup: 400, note: 'Contatos ilimitados', impl: 'Implantação em até 3 dias' }
   },
   {
     id: 'instagram-agent',
@@ -628,7 +628,7 @@ const SOLUTIONS = [
       'Integração com o perfil Instagram da empresa',
       'Ativação e monitoramento das conversas'
     ],
-    pricing: { monthly: 299, setup: 400, tiers: [{ contacts: 500, price: 299 }, { contacts: 2000, price: 399 }, { contacts: 5000, price: 599 }] }
+    pricing: { monthly: 299, setup: 400, tiers: [{ contacts: 500, price: 299 }, { contacts: 2000, price: 399 }, { contacts: 5000, price: 599 }], impl: 'Implantação em até 3 dias' }
   }
 ]
 
@@ -830,6 +830,7 @@ function buildSolCard(s, compact) {
         </div>
         ${!contract && s.pricing.tiers ? `<div class="price-note">Até 500 contatos/mês neste plano</div>` : ''}
         ${s.pricing.note ? `<div class="price-note">* ${s.pricing.note}</div>` : ''}
+        ${s.pricing.impl ? `<div class="price-note">⏱ ${s.pricing.impl}</div>` : ''}
       </div>
       <div class="sol-footer">
         ${badgeHtml}
