@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Octopus — by Thalamus</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; height: 100vh; overflow: hidden; }
+
+    :root {
+      --bg: #0f172a; --card: #1e293b; --card2: #334155; --border: #334155;
+      --accent: #7c3aed; --accent-h: #6d28d9; --success: #10b981;
+      --warning: #f59e0b; --danger: #ef4444; --text: #e2e8f0; --muted: #94a3b8;
+    }
+
+    /* ── Layout ─────────────────────────────────── */
+    #login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; }
+    #app { display: none; height: 100vh; }
+    .app-layout { display: flex; height: 100vh; }
+
+    /* ── Sidebar ────────────────────────────────── */
+    aside { width: 240px; min-height: 100vh; background: var(--card); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--border); }
+    .sidebar-header { padding: 18px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+    .sidebar-title { font-weight: 700; font-size: 15px; }
+    .sidebar-sub { font-size: 11px; color: var(--muted); }
+    nav { flex: 1; padding: 10px; overflow-y: auto; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; cursor: pointer; color: var(--muted); font-size: 13px; transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--card2); color: var(--text); }
+    .nav-item.active { background: var(--accent); color: #fff; }
+    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+    .company-tag { font-size: 11px; color: var(--muted); padding: 0 12px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Main ───────────────────────────────────── */
+    main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+    /* ── Login ──────────────────────────────────── */
+    .login-card { background: var(--card); border-radius: 16px; padding: 36px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
+    .login-logo-wrap { display: flex; justify-content: center; margin-bottom: 10px; }
+    .login-logo { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; }
+    .login-h { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+    .login-s { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+    /* ── Forms ──────────────────────────────────── */
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
+    input[type=text], input[type=email], input[type=password], input[type=number], textarea, select {
+      width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 13px; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+    select option { background: var(--card); }
+    input[type=checkbox] { width: auto; accent-color: var(--accent); cursor: pointer; }
+
+    /* ── Buttons ────────────────────────────────── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
+    .btn-primary:disabled { opacity: 0.6; cursor: default; }
+    .btn-secondary { background: var(--card2); color: var(--text); }
+    .btn-secondary:hover { background: #475569; }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(239,68,68,0.4); }
+    .btn-danger:hover { background: rgba(239,68,68,0.1); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ── Page header ────────────────────────────── */
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+    .page-title { font-size: 21px; font-weight: 700; }
+    .page-sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
+
+    /* ── Cards / Stats ──────────────────────────── */
+    .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .stat-value { font-size: 26px; font-weight: 700; }
+
+    /* ── List card ──────────────────────────────── */
+    .list-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .list-header { padding: 14px 18px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13px; color: var(--muted); }
+    .list-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+    .list-item { display: flex; align-items: center; padding: 13px 18px; border-bottom: 1px solid var(--border); gap: 10px; }
+    .list-item:last-child { border-bottom: none; }
+    .list-item-name { font-size: 14px; font-weight: 500; flex: 1; }
+    .list-item-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+    /* ── Badges ─────────────────────────────────── */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+    .bg-green { background: rgba(16,185,129,.15); color: #10b981; }
+    .bg-yellow { background: rgba(245,158,11,.15); color: #f59e0b; }
+    .bg-red { background: rgba(239,68,68,.15); color: #ef4444; }
+    .bg-purple { background: rgba(124,58,237,.15); color: #a78bfa; }
+    .bg-gray { background: rgba(148,163,184,.15); color: #94a3b8; }
+
+    /* ── WhatsApp instances ─────────────────────── */
+    .inst-grid { display: grid; gap: 14px; }
+    .inst-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+    .inst-header { display: flex; align-items: center; justify-content: space-between; }
+    .inst-name { font-size: 15px; font-weight: 600; }
+    .inst-phone { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .qr-wrap { margin-top: 14px; text-align: center; }
+    .qr-img { max-width: 200px; background: white; padding: 8px; border-radius: 8px; }
+    .qr-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+
+    /* ── Conversations ──────────────────────────── */
+    .conv-layout { display: flex; height: calc(100vh - 130px); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .conv-list { width: 270px; flex-shrink: 0; background: var(--card); border-right: 1px solid var(--border); overflow-y: auto; }
+    .conv-panel { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+    .conv-item { padding: 13px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+    .conv-item:hover { background: rgba(255,255,255,.04); }
+    .conv-item.active { background: rgba(124,58,237,.15); border-left: 3px solid var(--accent); }
+    .conv-phone { font-size: 13px; font-weight: 600; }
+    .conv-preview { font-size: 11px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .conv-empty-panel { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; }
+    .conv-header-bar { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--card); flex-shrink: 0; }
+    .conv-header-phone { font-weight: 600; font-size: 15px; }
+    .messages-wrap { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+    .msg { max-width: 68%; padding: 9px 13px; border-radius: 12px; font-size: 13px; line-height: 1.5; word-break: break-word; }
+    .msg-user { background: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; }
+    .msg-bot { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+
+    /* ── Modal ──────────────────────────────────── */
+    .modal-bd { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; align-items: center; justify-content: center; }
+    .modal-bd.open { display: flex; }
+    .modal { background: var(--card); border-radius: 16px; padding: 26px; width: 100%; max-width: 440px; border: 1px solid var(--border); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 6px; }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ── Toast ──────────────────────────────────── */
+    #toast-wrap { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: var(--card2); border-radius: 10px; padding: 11px 15px; font-size: 13px; border-left: 3px solid var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,.3); animation: tin .2s ease; max-width: 300px; }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+    @keyframes tin { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; } }
+
+    /* ── Utils ──────────────────────────────────── */
+    .hidden { display: none !important; }
+    .flex { display: flex; } .items-center { align-items: center; } .gap-2 { gap: 8px; }
+    .flex-1 { flex: 1; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; }
+    .text-sm { font-size: 13px; } .text-muted { color: var(--muted); } .text-center { text-align: center; }
+    .err-box { color: var(--danger); font-size: 12px; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+    .loading-msg { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ────────────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <img src="octopus.png" alt="Octopus" class="login-logo" onerror="this.style.display='none'">
+    </div>
+    <div class="login-h">Octopus</div>
+    <div class="login-s">by Thalamus</div>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" id="l-email" placeholder="seu@email.com" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div id="l-err" class="err-box hidden"></div>
+    <button class="btn btn-primary btn-full mt-4" id="l-btn" onclick="doLogin()">Entrar</button>
+    <p class="text-center text-sm text-muted" style="margin-top:16px">Octopus · Acesso restrito</p>
+  </div>
+</div>
+
+<!-- ── App ──────────────────────────────────────────────────────────────── -->
+<div id="app">
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside>
+      <div class="sidebar-header">
+        <img src="octopus.png" alt="Octopus" class="sidebar-logo" onerror="this.style.display='none'">
+        <div>
+          <div class="sidebar-title">Octopus</div>
+          <div class="sidebar-sub">by Thalamus</div>
+        </div>
+      </div>
+      <nav>
+        <button class="nav-item active" id="nav-dashboard" onclick="go('dashboard')"><span>📊</span> Dashboard</button>
+        <button class="nav-item" id="nav-connect" onclick="go('connect')"><span>📱</span> Conectar WhatsApp</button>
+        <button class="nav-item" id="nav-bot-config" onclick="go('bot-config')"><span>🤖</span> Configurar Bot</button>
+        <button class="nav-item" id="nav-knowledge" onclick="go('knowledge')"><span>📚</span> Base de Conhecimento</button>
+        <button class="nav-item" id="nav-products" onclick="go('products')"><span>🛍️</span> Produtos</button>
+        <button class="nav-item" id="nav-conversations" onclick="go('conversations')"><span>💬</span> Conversas</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="company-tag" id="company-tag"></div>
+        <button class="nav-item" onclick="doLogout()"><span>🚪</span> Sair</button>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main>
+
+      <!-- Dashboard -->
+      <section id="sec-dashboard">
+        <div class="page-header">
+          <div><div class="page-title">Dashboard</div><div class="page-sub" id="dash-sub"></div></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Conversas Abertas</div><div class="stat-value" id="s-open">—</div></div>
+          <div class="stat-card"><div class="stat-label">Conversas Encerradas</div><div class="stat-value" id="s-closed">—</div></div>
+          <div class="stat-card"><div class="stat-label">WhatsApp Conectado</div><div class="stat-value" id="s-wa">—</div></div>
+          <div class="stat-card"><div class="stat-label">Bot Ativo</div><div class="stat-value" id="s-bot">—</div></div>
+        </div>
+      </section>
+
+      <!-- Conectar WhatsApp -->
+      <section id="sec-connect" class="hidden">
+        <div class="page-header">
+          <div><div class="page-title">Conectar WhatsApp</div><div class="page-sub">Gerencie suas instâncias</div></div>
+          <button class="btn btn-primary" onclick="openInstModal()">+ Nova Instância</button>
+        </div>
+        <div id="inst-list" class="inst-grid"></div>
+      </section>
+
+      <!-- Bot Config -->
+      <section id="sec-bot-config" class="hidden">
+        <div class="page-header">
+          <div><div class="page-title">Configurar Bot</div><div class="page-sub">Personalize o assistente IA</div></div>
+          <button class="btn btn-primary" onclick="saveBotCfg()">Salvar</button>
+        </div>
+        <div class="card">
+          <div class="form-group">
+            <label>Nome da Empresa</label>
+            <input type="text" id="bc-biz" placeholder="Ex: Minha Loja">
+          </div>
+          <div class="form-group">
+            <label>Mensagem de Boas-Vindas</label>
+            <textarea id="bc-welcome" placeholder="Ex: Olá! Como posso te ajudar hoje?"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Instruções para o Bot</label>
+            <textarea id="bc-instr" style="min-height:120px" placeholder="Ex: Você é um atendente amigável. Sempre ofereça nossos produtos..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Horário de Funcionamento</label>
+            <input type="text" id="bc-hours" placeholder="Ex: Segunda a Sexta, 9h às 18h">
+          </div>
+          <div class="form-group flex items-center gap-2" style="margin-top:6px">
+            <input type="checkbox" id="bc-active">
+            <label for="bc-active" style="margin:0;cursor:pointer;color:var(--text)">Bot ativo</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Knowledge -->
+      <section id="sec-knowledge" class="hidden">
+        <div class="page-header">
+          <div><div class="page-title">Base de Conhecimento</div><div class="page-sub">Informações que o bot usa para responder</div></div>
+          <button class="btn btn-primary" onclick="openKwModal()">+ Novo Item</button>
+        </div>
+        <div id="kw-list" class="list-card"></div>
+      </section>
+
+      <!-- Products -->
+      <section id="sec-products" class="hidden">
+        <div class="page-header">
+          <div><div class="page-title">Produtos</div><div class="page-sub">Catálogo disponível para o bot sugerir</div></div>
+          <button class="btn btn-primary" onclick="openProdModal()">+ Novo Produto</button>
+        </div>
+        <div id="prod-list" class="list-card"></div>
+      </section>
+
+      <!-- Conversations -->
+      <section id="sec-conversations" class="hidden">
+        <div class="page-header">
+          <div><div class="page-title">Conversas</div></div>
+        </div>
+        <div class="conv-layout">
+          <div class="conv-list" id="conv-list-el"></div>
+          <div class="conv-panel" id="conv-panel">
+            <div class="conv-empty-panel">Selecione uma conversa</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ── Modal: Nova Instância ─────────────────────────────────────────────── -->
+<div class="modal-bd" id="modal-inst">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Nova Instância WhatsApp</div>
+      <button class="modal-close" onclick="closeModal('modal-inst')">×</button>
+    </div>
+    <div class="form-group">
+      <label>Nome da instância</label>
+      <input type="text" id="inst-name-inp" placeholder="ex: minha-loja (sem espaços)">
+    </div>
+    <p class="text-sm text-muted">Use apenas letras, números e hífens.</p>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('modal-inst')">Cancelar</button>
+      <button class="btn btn-primary" id="create-inst-btn" onclick="createInstance()">Criar e Conectar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Knowledge ──────────────────────────────────────────────────── -->
+<div class="modal-bd" id="modal-kw">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="kw-modal-title">Novo Item</div>
+      <button class="modal-close" onclick="closeModal('modal-kw')">×</button>
+    </div>
+    <div class="form-group">
+      <label>Tipo</label>
+      <select id="kw-type">
+        <option value="faq">FAQ</option>
+        <option value="policy">Política</option>
+        <option value="info">Informação</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Título</label>
+      <input type="text" id="kw-title" placeholder="Ex: Política de devolução">
+    </div>
+    <div class="form-group">
+      <label>Conteúdo</label>
+      <textarea id="kw-content" style="min-height:110px" placeholder="Descreva detalhadamente..."></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('modal-kw')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveKw()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Produto ────────────────────────────────────────────────────── -->
+<div class="modal-bd" id="modal-prod">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="prod-modal-title">Novo Produto</div>
+      <button class="modal-close" onclick="closeModal('modal-prod')">×</button>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="p-name" placeholder="Ex: Camiseta Azul">
+      </div>
+      <div class="form-group">
+        <label>Preço (R$)</label>
+        <input type="number" id="p-price" placeholder="49.90" step="0.01" min="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea id="p-desc" placeholder="Descreva o produto..."></textarea>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Estoque</label>
+        <input type="number" id="p-stock" placeholder="10" min="0">
+      </div>
+      <div class="form-group flex items-center gap-2" style="padding-top: 22px">
+        <input type="checkbox" id="p-active" checked>
+        <label for="p-active" style="margin:0;cursor:pointer;color:var(--text)">Ativo</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('modal-prod')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProd()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toasts ─────────────────────────────────────────────────────────────── -->
+<div id="toast-wrap"></div>
+
+<script>
+const SUPABASE_URL = 'https://emothfrrdtbhkmpsffhc.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtb3RoZnJyZHRiaGttcHNmZmhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMjI0NjksImV4cCI6MjA5Njc5ODQ2OX0.E3-xFwGYBHFdYuLlzqpzLDk1V2ffAkHoQFt6MbAQRWY'
+
+let sb, session, company
+let currentConvId = null
+let rtChannels = []
+// Local caches to avoid JSON-in-onclick
+let kwCache = {}
+let prodCache = {}
+let kwEditId = null
+let prodEditId = null
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+async function init() {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  const { data: { session: s } } = await sb.auth.getSession()
+  if (s) {
+    session = s
+    await loadCompany()
+    showApp()
+    go('dashboard')
+  } else {
+    showLogin()
+  }
+  document.getElementById('l-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-bd.open').forEach(m => m.classList.remove('open'))
+  })
+}
+
+// ─── Auth ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim()
+  const pwd   = document.getElementById('l-pwd').value
+  const btn   = document.getElementById('l-btn')
+  const err   = document.getElementById('l-err')
+  if (!email || !pwd) return
+  btn.disabled = true; btn.textContent = 'Entrando...'
+  err.classList.add('hidden')
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pwd })
+  if (error || !data.session) {
+    err.textContent = 'E-mail ou senha inválidos.'
+    err.classList.remove('hidden')
+    btn.disabled = false; btn.textContent = 'Entrar'
+    return
+  }
+  session = data.session
+  await loadCompany()
+  showApp()
+  go('dashboard')
+}
+
+async function doLogout() {
+  rtChannels.forEach(c => sb.removeChannel(c)); rtChannels = []
+  await sb.auth.signOut()
+  session = null; company = null
+  document.getElementById('app').style.display = 'none'
+  showLogin()
+}
+
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex'
+  document.getElementById('app').style.display = 'none'
+  document.getElementById('l-email').value = ''
+  document.getElementById('l-pwd').value = ''
+  document.getElementById('l-err').classList.add('hidden')
+  const btn = document.getElementById('l-btn'); btn.disabled = false; btn.textContent = 'Entrar'
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('app').style.display = 'block'
+}
+
+// ─── Company ───────────────────────────────────────────────────────────────
+async function loadCompany() {
+  const { data } = await sb.from('companies').select('*').eq('user_id', session.user.id).single()
+  company = data
+  if (company) {
+    document.getElementById('company-tag').textContent = company.name
+    document.getElementById('dash-sub').textContent = company.name
+  }
+}
+
+// ─── Navigation ────────────────────────────────────────────────────────────
+function go(sec) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+  const nb = document.getElementById('nav-' + sec)
+  if (nb) nb.classList.add('active')
+  document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'))
+  document.getElementById('sec-' + sec).classList.remove('hidden')
+  // Clear old realtime subscriptions except conversations channel
+  if (sec !== 'conversations' && sec !== 'connect') {
+    rtChannels.forEach(c => sb.removeChannel(c)); rtChannels = []
+  }
+  if (sec === 'dashboard')     loadDashboard()
+  if (sec === 'connect')       loadConnect()
+  if (sec === 'bot-config')    loadBotCfg()
+  if (sec === 'knowledge')     loadKw()
+  if (sec === 'products')      loadProds()
+  if (sec === 'conversations') loadConvs()
+}
+
+// ─── Dashboard ─────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  if (!company) return
+  const [r1, r2, r3, r4] = await Promise.all([
+    sb.from('conversations').select('*', { count: 'exact', head: true }).eq('company_id', company.id).eq('status', 'open'),
+    sb.from('conversations').select('*', { count: 'exact', head: true }).eq('company_id', company.id).eq('status', 'closed'),
+    sb.from('whatsapp_instances').select('status').eq('company_id', company.id),
+    sb.from('bot_configs').select('active').eq('company_id', company.id).single()
+  ])
+  document.getElementById('s-open').textContent   = r1.count ?? 0
+  document.getElementById('s-closed').textContent = r2.count ?? 0
+  const insts   = r3.data || []
+  const conn    = insts.filter(i => i.status === 'connected').length
+  document.getElementById('s-wa').textContent  = insts.length ? `${conn}/${insts.length}` : '—'
+  document.getElementById('s-bot').textContent = r4.data?.active ? '✓ Sim' : '✗ Não'
+}
+
+// ─── WhatsApp Instances ────────────────────────────────────────────────────
+async function loadConnect() {
+  if (!company) return
+  const { data } = await sb.from('whatsapp_instances').select('*').eq('company_id', company.id).order('created_at')
+  renderInsts(data || [])
+
+  const existing = rtChannels.find(c => c.topic?.includes('inst-rt'))
+  if (!existing) {
+    const ch = sb.channel('inst-rt-' + company.id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'whatsapp_instances', filter: `company_id=eq.${company.id}` }, () => loadConnect())
+      .subscribe()
+    rtChannels.push(ch)
+  }
+}
+
+function renderInsts(insts) {
+  const el = document.getElementById('inst-list')
+  if (!insts.length) {
+    el.innerHTML = ''
+    const empty = document.createElement('div')
+    empty.className = 'card text-center text-muted'
+    empty.style.padding = '40px'
+    empty.textContent = 'Nenhuma instância. Clique em "+ Nova Instância" para criar.'
+    el.appendChild(empty)
+    return
+  }
+  el.innerHTML = ''
+  insts.forEach(inst => {
+    const card = document.createElement('div')
+    card.className = 'inst-card'
+
+    const statusBadge = inst.status === 'connected'
+      ? '<span class="badge bg-green">● Conectado</span>'
+      : inst.status === 'connecting'
+      ? '<span class="badge bg-yellow">◌ Conectando</span>'
+      : '<span class="badge bg-gray">○ Desconectado</span>'
+
+    const header = document.createElement('div')
+    header.className = 'inst-header'
+    header.innerHTML = `
+      <div>
+        <div class="inst-name">${esc(inst.instance_name)}</div>
+        ${inst.phone ? `<div class="inst-phone">${esc(inst.phone)}</div>` : ''}
+      </div>
+      <div class="flex items-center gap-2">
+        ${statusBadge}
+        <button class="btn btn-danger btn-sm" data-iid="${esc(inst.id)}" data-iname="${esc(inst.instance_name)}">Excluir</button>
+      </div>`
+    header.querySelector('[data-iid]').addEventListener('click', e => {
+      deleteInstance(e.currentTarget.dataset.iid, e.currentTarget.dataset.iname)
+    })
+    card.appendChild(header)
+
+    if (inst.qr_code && inst.status !== 'connected') {
+      const qrWrap = document.createElement('div')
+      qrWrap.className = 'qr-wrap'
+      const hint = document.createElement('p')
+      hint.className = 'qr-hint'
+      hint.textContent = 'Escaneie o QR Code com seu WhatsApp:'
+      const img = document.createElement('img')
+      img.className = 'qr-img'
+      img.alt = 'QR Code'
+      img.src = inst.qr_code
+      qrWrap.appendChild(hint)
+      qrWrap.appendChild(img)
+      card.appendChild(qrWrap)
+    }
+
+    el.appendChild(card)
+  })
+}
+
+function openInstModal() {
+  document.getElementById('inst-name-inp').value = ''
+  openModal('modal-inst')
+}
+
+async function createInstance() {
+  const name = document.getElementById('inst-name-inp').value.trim()
+  if (!name) return
+  const btn = document.getElementById('create-inst-btn')
+  btn.disabled = true; btn.textContent = 'Criando...'
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/create-instance`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ instance_name: name })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Erro ao criar instância')
+    closeModal('modal-inst')
+    toast('Instância criada! Aguarde o QR Code aparecer...', 'success')
+    loadConnect()
+  } catch (e) {
+    toast(e.message, 'error')
+  } finally {
+    btn.disabled = false; btn.textContent = 'Criar e Conectar'
+  }
+}
+
+async function deleteInstance(id, name) {
+  if (!confirm(`Excluir a instância "${name}"?`)) return
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/delete-instance`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ instance_id: id, instance_name: name })
+    })
+    if (!res.ok) throw new Error('edge function not found')
+    toast('Instância excluída.', 'success')
+  } catch {
+    // Fallback: delete directly from DB
+    await sb.from('whatsapp_instances').delete().eq('id', id)
+    toast('Instância removida.', 'success')
+  }
+  loadConnect()
+}
+
+// ─── Bot Config ────────────────────────────────────────────────────────────
+async function loadBotCfg() {
+  if (!company) return
+  const { data } = await sb.from('bot_configs').select('*').eq('company_id', company.id).single()
+  if (data) {
+    document.getElementById('bc-biz').value     = data.business_name    || ''
+    document.getElementById('bc-welcome').value = data.welcome_message  || ''
+    document.getElementById('bc-instr').value   = data.ai_instructions  || ''
+    document.getElementById('bc-hours').value   = data.business_hours   || ''
+    document.getElementById('bc-active').checked = data.active ?? true
+  }
+}
+
+async function saveBotCfg() {
+  if (!company) return
+  const payload = {
+    company_id:      company.id,
+    business_name:   document.getElementById('bc-biz').value,
+    welcome_message: document.getElementById('bc-welcome').value,
+    ai_instructions: document.getElementById('bc-instr').value,
+    business_hours:  document.getElementById('bc-hours').value,
+    active:          document.getElementById('bc-active').checked
+  }
+  const { error } = await sb.from('bot_configs').upsert(payload, { onConflict: 'company_id' })
+  if (error) toast('Erro ao salvar: ' + error.message, 'error')
+  else toast('Configurações salvas!', 'success')
+}
+
+// ─── Knowledge ─────────────────────────────────────────────────────────────
+async function loadKw() {
+  if (!company) return
+  const { data } = await sb.from('knowledge_base').select('*').eq('company_id', company.id).order('created_at')
+  kwCache = {}
+  ;(data || []).forEach(item => { kwCache[item.id] = item })
+  renderKw(data || [])
+}
+
+function renderKw(items) {
+  const el = document.getElementById('kw-list')
+  if (!items.length) {
+    el.innerHTML = '<div class="list-empty">Nenhum item. Adicione informações para o bot usar.</div>'
+    return
+  }
+  const typeLabel = { faq: 'FAQ', policy: 'Política', info: 'Informação' }
+  const typeClass = { faq: 'bg-purple', policy: 'bg-yellow', info: 'bg-green' }
+  el.innerHTML = '<div class="list-header">Itens de conhecimento</div>'
+  items.forEach(item => {
+    const row = document.createElement('div')
+    row.className = 'list-item'
+    const info = document.createElement('div')
+    info.className = 'flex-1'
+    const name = document.createElement('div')
+    name.className = 'list-item-name'
+    name.textContent = item.title
+    const sub = document.createElement('div')
+    sub.className = 'list-item-sub'
+    sub.textContent = item.content.substring(0, 80) + (item.content.length > 80 ? '…' : '')
+    info.appendChild(name); info.appendChild(sub)
+
+    const badge = document.createElement('span')
+    badge.className = `badge ${typeClass[item.type] || 'bg-gray'}`
+    badge.textContent = typeLabel[item.type] || item.type
+
+    const editBtn = document.createElement('button')
+    editBtn.className = 'btn btn-secondary btn-sm'
+    editBtn.textContent = 'Editar'
+    editBtn.addEventListener('click', () => openKwModal(item.id))
+
+    const delBtn = document.createElement('button')
+    delBtn.className = 'btn btn-danger btn-sm'
+    delBtn.textContent = '×'
+    delBtn.addEventListener('click', () => deleteKw(item.id))
+
+    row.appendChild(info); row.appendChild(badge); row.appendChild(editBtn); row.appendChild(delBtn)
+    el.appendChild(row)
+  })
+}
+
+function openKwModal(id = null) {
+  kwEditId = id
+  const item = id ? kwCache[id] : null
+  document.getElementById('kw-modal-title').textContent = item ? 'Editar Item' : 'Novo Item'
+  document.getElementById('kw-type').value    = item?.type    || 'faq'
+  document.getElementById('kw-title').value   = item?.title   || ''
+  document.getElementById('kw-content').value = item?.content || ''
+  openModal('modal-kw')
+}
+
+async function saveKw() {
+  if (!company) return
+  const payload = {
+    company_id: company.id,
+    type:    document.getElementById('kw-type').value,
+    title:   document.getElementById('kw-title').value,
+    content: document.getElementById('kw-content').value
+  }
+  let error
+  if (kwEditId) {
+    ;({ error } = await sb.from('knowledge_base').update(payload).eq('id', kwEditId))
+  } else {
+    ;({ error } = await sb.from('knowledge_base').insert(payload))
+  }
+  if (error) { toast('Erro: ' + error.message, 'error'); return }
+  closeModal('modal-kw')
+  toast('Item salvo!', 'success')
+  loadKw()
+}
+
+async function deleteKw(id) {
+  if (!confirm('Excluir este item?')) return
+  await sb.from('knowledge_base').delete().eq('id', id)
+  toast('Item removido.', 'success')
+  loadKw()
+}
+
+// ─── Products ──────────────────────────────────────────────────────────────
+async function loadProds() {
+  if (!company) return
+  const { data } = await sb.from('products').select('*').eq('company_id', company.id).order('created_at')
+  prodCache = {}
+  ;(data || []).forEach(p => { prodCache[p.id] = p })
+  renderProds(data || [])
+}
+
+function renderProds(prods) {
+  const el = document.getElementById('prod-list')
+  if (!prods.length) {
+    el.innerHTML = '<div class="list-empty">Nenhum produto. Adicione ao catálogo.</div>'
+    return
+  }
+  el.innerHTML = '<div class="list-header">Produtos</div>'
+  prods.forEach(p => {
+    const row = document.createElement('div')
+    row.className = 'list-item'
+    const info = document.createElement('div')
+    info.className = 'flex-1'
+    const name = document.createElement('div')
+    name.className = 'list-item-name'
+    name.textContent = p.name
+    const sub = document.createElement('div')
+    sub.className = 'list-item-sub'
+    sub.textContent = `R$ ${Number(p.price).toFixed(2)} · Estoque: ${p.stock}`
+    info.appendChild(name); info.appendChild(sub)
+
+    const badge = document.createElement('span')
+    badge.className = `badge ${p.active ? 'bg-green' : 'bg-gray'}`
+    badge.textContent = p.active ? 'Ativo' : 'Inativo'
+
+    const editBtn = document.createElement('button')
+    editBtn.className = 'btn btn-secondary btn-sm'
+    editBtn.textContent = 'Editar'
+    editBtn.addEventListener('click', () => openProdModal(p.id))
+
+    const delBtn = document.createElement('button')
+    delBtn.className = 'btn btn-danger btn-sm'
+    delBtn.textContent = '×'
+    delBtn.addEventListener('click', () => deleteProd(p.id))
+
+    row.appendChild(info); row.appendChild(badge); row.appendChild(editBtn); row.appendChild(delBtn)
+    el.appendChild(row)
+  })
+}
+
+function openProdModal(id = null) {
+  prodEditId = id
+  const p = id ? prodCache[id] : null
+  document.getElementById('prod-modal-title').textContent = p ? 'Editar Produto' : 'Novo Produto'
+  document.getElementById('p-name').value    = p?.name        || ''
+  document.getElementById('p-price').value   = p?.price       ?? ''
+  document.getElementById('p-desc').value    = p?.description || ''
+  document.getElementById('p-stock').value   = p?.stock       ?? 0
+  document.getElementById('p-active').checked = p?.active     ?? true
+  openModal('modal-prod')
+}
+
+async function saveProd() {
+  if (!company) return
+  const payload = {
+    company_id:  company.id,
+    name:        document.getElementById('p-name').value,
+    description: document.getElementById('p-desc').value,
+    price:       parseFloat(document.getElementById('p-price').value) || 0,
+    stock:       parseInt(document.getElementById('p-stock').value)   || 0,
+    active:      document.getElementById('p-active').checked
+  }
+  let error
+  if (prodEditId) {
+    ;({ error } = await sb.from('products').update(payload).eq('id', prodEditId))
+  } else {
+    ;({ error } = await sb.from('products').insert(payload))
+  }
+  if (error) { toast('Erro: ' + error.message, 'error'); return }
+  closeModal('modal-prod')
+  toast('Produto salvo!', 'success')
+  loadProds()
+}
+
+async function deleteProd(id) {
+  if (!confirm('Excluir este produto?')) return
+  await sb.from('products').delete().eq('id', id)
+  toast('Produto removido.', 'success')
+  loadProds()
+}
+
+// ─── Conversations ──────────────────────────────────────────────────────────
+async function loadConvs() {
+  if (!company) return
+  const { data } = await sb.from('conversations')
+    .select('id, customer_phone, customer_name, status, updated_at, messages(content, role, created_at)')
+    .eq('company_id', company.id)
+    .order('updated_at', { ascending: false })
+  renderConvList(data || [])
+
+  const existing = rtChannels.find(c => c.topic?.includes('convs-rt'))
+  if (!existing) {
+    const ch = sb.channel('convs-rt-' + company.id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations', filter: `company_id=eq.${company.id}` }, () => loadConvs())
+      .subscribe()
+    rtChannels.push(ch)
+  }
+}
+
+function renderConvList(convs) {
+  const el = document.getElementById('conv-list-el')
+  if (!convs.length) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Sem conversas ainda.</div>'
+    return
+  }
+  el.innerHTML = ''
+  convs.forEach(c => {
+    const msgs   = c.messages || []
+    const last   = msgs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
+    const item   = document.createElement('div')
+    item.className = `conv-item${currentConvId === c.id ? ' active' : ''}`
+    item.addEventListener('click', () => openConv(c.id, c.customer_phone, c.status))
+
+    const top = document.createElement('div')
+    top.className = 'flex items-center gap-2'
+    const phone = document.createElement('div')
+    phone.className = 'conv-phone flex-1'
+    phone.textContent = c.customer_phone
+    const badge = document.createElement('span')
+    badge.className = `badge ${c.status === 'open' ? 'bg-green' : 'bg-gray'}`
+    badge.style.fontSize = '10px'
+    badge.textContent = c.status === 'open' ? 'aberta' : 'fechada'
+    top.appendChild(phone); top.appendChild(badge)
+
+    const preview = document.createElement('div')
+    preview.className = 'conv-preview'
+    preview.textContent = last ? last.content.substring(0, 50) : 'Sem mensagens'
+
+    item.appendChild(top); item.appendChild(preview)
+    el.appendChild(item)
+  })
+}
+
+async function openConv(id, phone, status) {
+  currentConvId = id
+  // Reload list to update active state
+  loadConvs()
+
+  const { data: msgs } = await sb.from('messages').select('*').eq('conversation_id', id).order('created_at')
+  const panel = document.getElementById('conv-panel')
+  panel.innerHTML = ''
+
+  // Header
+  const header = document.createElement('div')
+  header.className = 'conv-header-bar'
+  const title = document.createElement('div')
+  title.className = 'conv-header-phone'
+  title.textContent = phone
+  header.appendChild(title)
+  if (status === 'open') {
+    const closeBtn = document.createElement('button')
+    closeBtn.className = 'btn btn-secondary btn-sm'
+    closeBtn.textContent = 'Fechar conversa'
+    closeBtn.addEventListener('click', () => closeConv(id))
+    header.appendChild(closeBtn)
+  } else {
+    const tag = document.createElement('span')
+    tag.className = 'badge bg-gray'
+    tag.textContent = 'Fechada'
+    header.appendChild(tag)
+  }
+  panel.appendChild(header)
+
+  // Messages
+  const wrap = document.createElement('div')
+  wrap.className = 'messages-wrap'
+  wrap.id = 'msgs-wrap'
+  ;(msgs || []).forEach(m => {
+    const div = document.createElement('div')
+    div.className = `msg ${m.role === 'user' ? 'msg-user' : 'msg-bot'}`
+    div.textContent = m.content
+    wrap.appendChild(div)
+  })
+  panel.appendChild(wrap)
+  wrap.scrollTop = wrap.scrollHeight
+
+  // Realtime for this conversation's messages
+  rtChannels.filter(c => c.topic?.startsWith('msgs-rt')).forEach(c => sb.removeChannel(c))
+  const ch = sb.channel('msgs-rt-' + id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${id}` }, p => {
+      const w = document.getElementById('msgs-wrap')
+      if (!w) return
+      const div = document.createElement('div')
+      div.className = `msg ${p.new.role === 'user' ? 'msg-user' : 'msg-bot'}`
+      div.textContent = p.new.content
+      w.appendChild(div)
+      w.scrollTop = w.scrollHeight
+    }).subscribe()
+  rtChannels.push(ch)
+}
+
+async function closeConv(id) {
+  await sb.from('conversations').update({ status: 'closed' }).eq('id', id)
+  toast('Conversa encerrada.', 'success')
+  currentConvId = null
+  document.getElementById('conv-panel').innerHTML = '<div class="conv-empty-panel">Selecione uma conversa</div>'
+  loadConvs()
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return ''
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open') }
+function closeModal(id) { document.getElementById(id).classList.remove('open') }
+
+function toast(msg, type = '') {
+  const wrap = document.getElementById('toast-wrap')
+  const div  = document.createElement('div')
+  div.className = `toast ${type}`
+  div.textContent = msg
+  wrap.appendChild(div)
+  setTimeout(() => div.remove(), 4000)
+}
+
+init()
+</script>
+</body>
+</html>
