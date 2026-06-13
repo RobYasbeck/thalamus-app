@@ -600,10 +600,10 @@ const SOLUTIONS = [
   {
     id: 'instagram-agent',
     name: 'Chatbot — Instagram',
-    icon: '📸',
+    icon: '👾',
     icon_class: 'pink',
     tagline: 'Atendimento automático no Instagram 24/7',
-    description: 'Um agente de IA treinado com o conhecimento da sua empresa responde mensagens diretas no Instagram automaticamente. Qualifica leads, responde dúvidas e direciona para atendimento humano quando necessário.',
+    description: 'Um chatbot de atendimento com fluxo desenhado pela nossa equipe para tratar, atender e direcionar corretamente seus clientes entre seus canais de atendimento.',
     steps: [
       'Configuração e treinamento do agente',
       'Integração com o perfil Instagram da empresa',
@@ -800,7 +800,7 @@ function buildSolCard(s, compact) {
           ${contract
             ? `<div class="price-value">R$ ${s.pricing.monthly + (contract.extra_monthly ?? 0)}<span class="price-period">/mês</span></div>`
             : s.pricing.tiers
-              ? `<div class="price-value" style="font-size:14px">a partir de R$ ${s.pricing.monthly}<span class="price-period">/mês</span></div>`
+              ? `<div class="price-label" style="margin-bottom:4px">a partir de</div><div class="price-value">R$ ${s.pricing.monthly}<span class="price-period">/mês</span></div>`
               : `<div class="price-value">R$ ${s.pricing.monthly}<span class="price-period">/mês</span></div>`}
         </div>
         <div class="price-item">
