@@ -63,52 +63,53 @@
       background-size: 60px 60px;
     }
 
-    /* card glass */
+    /* form solto — sem card */
     .login-card {
       position: relative; z-index: 1;
-      background: rgba(255,255,255,.04);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 24px; padding: 44px 40px;
-      width: 100%; max-width: 400px;
-      box-shadow: 0 32px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+      width: 100%; max-width: 360px;
+      padding: 0 24px;
     }
 
-    .login-logo-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
-    .login-logo { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; }
-    .login-logo-fallback { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .login-logo-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .login-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
+    .login-logo-fallback { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .login-brand { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
 
     .login-h {
-      text-align: center; font-size: 28px; font-weight: 800;
-      letter-spacing: -.02em; color: #fff; margin-bottom: 4px;
+      font-size: 38px; font-weight: 800; letter-spacing: -.03em;
+      color: #fff; line-height: 1.1; margin-bottom: 10px;
     }
-    .login-s { text-align: center; color: rgba(255,255,255,.4); font-size: 13px; margin-bottom: 32px; }
+    .login-s { color: rgba(255,255,255,.35); font-size: 14px; margin-bottom: 44px; }
 
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.4); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
-
+    .form-group { margin-bottom: 28px; }
+    label {
+      display: block; font-size: 10px; font-weight: 700;
+      color: rgba(255,255,255,.35); margin-bottom: 10px;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
     input[type=email], input[type=password] {
-      width: 100%; padding: 12px 16px;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-      border-radius: 12px; color: #fff; font-size: 14px; outline: none;
-      transition: border-color 0.2s, background 0.2s; font-family: inherit;
+      width: 100%; padding: 0 0 12px;
+      background: transparent; border: none;
+      border-bottom: 1px solid rgba(255,255,255,.15);
+      color: #fff; font-size: 18px; outline: none;
+      transition: border-color 0.25s; font-family: inherit; font-weight: 400;
     }
-    input[type=email]::placeholder, input[type=password]::placeholder { color: rgba(255,255,255,.25); }
-    input:focus { border-color: rgba(124,58,237,.7); background: rgba(124,58,237,.08); }
+    input[type=email]::placeholder, input[type=password]::placeholder { color: rgba(255,255,255,.2); font-size: 18px; }
+    input:focus { border-bottom-color: #7c3aed; }
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 13px 18px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; letter-spacing: .01em; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; letter-spacing: .02em; }
     .btn-primary {
-      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-      color: #fff; box-shadow: 0 4px 24px rgba(124,58,237,.4);
+      background: #fff; color: #0f0a1e;
+      box-shadow: 0 4px 24px rgba(255,255,255,.15);
     }
-    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(124,58,237,.5); }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(255,255,255,.25); background: #f1f0ff; }
     .btn-primary:active:not(:disabled) { transform: translateY(0); }
-    .btn-primary:disabled { opacity: 0.5; cursor: default; }
-    .btn-secondary { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.1); }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-secondary { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; }
     .btn-secondary:hover { background: rgba(255,255,255,.12); }
     .btn-full { width: 100%; }
-    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-    .err-box { color: #f87171; font-size: 12px; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); border-radius: 10px; padding: 10px 14px; margin-top: 10px; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
+    .err-box { color: #f87171; font-size: 12px; margin-top: 12px; }
 
     /* ── APP ── */
     #app { display: none; height: 100vh; }
@@ -272,9 +273,10 @@
       <img src="thalamus.png" alt="Thalamus" class="login-logo" id="login-img"
            onerror="this.classList.add('hidden');document.getElementById('login-logo-fb').classList.remove('hidden')">
       <div class="login-logo-fallback hidden" id="login-logo-fb">🧠</div>
+      <span class="login-brand">Thalamus</span>
     </div>
-    <div class="login-h">Thalamus</div>
-    <div class="login-s">Soluções de IA para o seu negócio</div>
+    <div class="login-h">Bem-vindo<br>de volta.</div>
+    <div class="login-s">Acesse sua conta para continuar.</div>
     <div class="form-group">
       <label>E-mail</label>
       <input type="email" id="l-email" placeholder="seu@email.com" autocomplete="username">
@@ -284,7 +286,7 @@
       <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
     </div>
     <div id="l-err" class="err-box hidden"></div>
-    <button class="btn btn-primary btn-full" style="margin-top:20px" id="l-btn" onclick="doLogin()">Acessar plataforma</button>
+    <button class="btn btn-primary btn-full" style="margin-top:8px" id="l-btn" onclick="doLogin()">Acessar plataforma →</button>
   </div>
 </div>
 
