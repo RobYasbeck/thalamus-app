@@ -597,6 +597,7 @@ const STATUS_ORDER = { contratado: 0, em_configuracao: 1, em_implantacao: 2, ati
 let sb, session, company
 let myContracts = []
 let pendingContractId = null
+let contractChannel = null
 
 async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -630,6 +631,7 @@ async function doLogin() {
 }
 
 async function doLogout() {
+  if (contractChannel) { sb.removeChannel(contractChannel); contractChannel = null }
   await sb.auth.signOut()
   session = null; company = null; myContracts = []
   document.getElementById('app').style.display = 'none'
@@ -654,12 +656,35 @@ async function loadCompany() {
     document.getElementById('welcome-company').textContent  = `Olá, ${company.name}!`
   }
   await loadContracts()
+  subscribeToContracts()
 }
 
 async function loadContracts() {
   if (!company) return
   const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
   myContracts = data || []
+}
+
+function subscribeToContracts() {
+  if (contractChannel) sb.removeChannel(contractChannel)
+  contractChannel = sb
+    .channel('company-solutions-' + company.id)
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'company_solutions',
+      filter: 'company_id=eq.' + company.id
+    }, async () => {
+      await loadContracts()
+      const active = document.querySelector('main > section.active')
+      if (!active) return
+      const sec = active.id.replace('sec-', '')
+      if (sec === 'dashboard')    renderDashboard()
+      if (sec === 'catalog')      renderCatalog()
+      if (sec === 'my-solutions') renderMySolutions()
+      if (sec === 'billing')      renderBilling()
+    })
+    .subscribe()
 }
 
 function showApp() {
