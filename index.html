@@ -256,6 +256,16 @@
     .toast.error   { border-color: #ef4444; }
     @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; } }
 
+    /* ── ANIMAÇÕES DE ENTRADA ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo-wrap  { animation: fadeInUp .7s ease forwards; opacity: 0; }
+    .login-headline   { animation: fadeInUp .7s ease forwards; animation-delay: .4s; opacity: 0; }
+    .login-form-wrap  { animation: fadeInUp .7s ease forwards; animation-delay: .8s; opacity: 0; }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -277,18 +287,22 @@
       <div class="login-logo-fallback hidden" id="login-logo-fb">🧠</div>
       <span class="login-brand">Thalamus</span>
     </div>
-    <div class="login-h">Bem-vindo<br>de volta.</div>
-    <div class="login-s">Acesse sua conta para continuar.</div>
-    <div class="form-group">
-      <label>E-mail</label>
-      <input type="email" id="l-email" placeholder="seu@email.com" autocomplete="username">
+    <div class="login-headline">
+      <div class="login-h">Bem-vindo<br>de volta.</div>
+      <div class="login-s">Acesse sua conta para continuar.</div>
     </div>
-    <div class="form-group">
-      <label>Senha</label>
-      <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
+    <div class="login-form-wrap">
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="l-email" placeholder="seu@email.com" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div id="l-err" class="err-box hidden"></div>
+      <button class="btn btn-primary btn-full" style="margin-top:8px" id="l-btn" onclick="doLogin()">Acessar plataforma →</button>
     </div>
-    <div id="l-err" class="err-box hidden"></div>
-    <button class="btn btn-primary btn-full" style="margin-top:8px" id="l-btn" onclick="doLogin()">Acessar plataforma →</button>
   </div>
 </div>
 
