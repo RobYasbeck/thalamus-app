@@ -210,6 +210,18 @@
     .sol-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cbd5e1; margin-bottom: 6px; }
     .sol-step:last-child { margin-bottom: 0; }
     .step-num { width: 18px; height: 18px; border-radius: 50%; background: rgba(124,58,237,.3); color: #a78bfa; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    /* ── PRICING ── */
+    .sol-pricing {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      background: rgba(255,255,255,.03); border-radius: 10px; padding: 14px;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .price-item { flex: 1; min-width: 90px; }
+    .price-label { font-size: 9px; font-weight: 600; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+    .price-value { font-size: 18px; font-weight: 700; color: #fff; font-family: 'Rajdhani', sans-serif; }
+    .price-period { font-size: 10px; color: rgba(255,255,255,.35); margin-left: 2px; }
+    .price-note { width: 100%; font-size: 10px; color: rgba(255,255,255,.3); padding-top: 8px; border-top: 1px solid rgba(255,255,255,.06); margin-top: 4px; letter-spacing: .02em; }
+
     .sol-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
     .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
     .badge-active     { background: rgba(16,185,129,.15); color: #10b981; }
@@ -458,7 +470,8 @@ const SOLUTIONS = [
       'Integração com seu sistema financeiro',
       'IA identifica e prioriza inadimplentes',
       'Cobrança automática multicanal (WhatsApp, e-mail, SMS)'
-    ]
+    ],
+    pricing: { monthly: 295, setup: 400, note: 'Customizações cobradas à parte.' }
   },
   {
     id: 'dashboard',
@@ -471,7 +484,8 @@ const SOLUTIONS = [
       'Mapeamento das fontes de dados da empresa',
       'Criação de dashboards personalizados',
       'Acesso em tempo real via link seguro'
-    ]
+    ],
+    pricing: { monthly: 250, setup: 400, note: 'Customizações cobradas à parte.' }
   },
   {
     id: 'whatsapp-agent',
@@ -484,7 +498,8 @@ const SOLUTIONS = [
       'Configuração e treinamento do agente',
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
-    ]
+    ],
+    pricing: { monthly: 200, setup: 100 }
   }
 ]
 
@@ -630,6 +645,17 @@ function buildSolCard(s, compact) {
             ${st}
           </div>`).join('')}
       </div>` : ''}
+      <div class="sol-pricing">
+        <div class="price-item">
+          <div class="price-label">Mensalidade</div>
+          <div class="price-value">R$ ${s.pricing.monthly}<span class="price-period">/mês</span></div>
+        </div>
+        <div class="price-item">
+          <div class="price-label">Implantação</div>
+          <div class="price-value">R$ ${s.pricing.setup}<span class="price-period"> único</span></div>
+        </div>
+        ${s.pricing.note ? `<div class="price-note">* ${s.pricing.note}</div>` : ''}
+      </div>
       <div class="sol-footer">
         ${badgeHtml}
         ${footerBtn}
