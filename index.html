@@ -809,7 +809,7 @@ function buildSolCard(s, compact) {
             ? `<div class="price-value" style="color:var(--green)">Isento</div>`
             : `<div class="price-value">R$ ${s.pricing.setup}<span class="price-period"> único</span></div>`}
         </div>
-        ${!contract && s.pricing.tiers ? `<div class="price-note">${s.pricing.tiers.map(t => `até ${t.contacts.toLocaleString('pt-BR')} contatos: R$ ${t.price}`).join(' · ')}</div>` : ''}
+        ${!contract && s.pricing.tiers ? `<div class="price-note">Até 500 contatos R$ 180 — temos planos para maior volume</div>` : ''}
         ${s.pricing.note ? `<div class="price-note">* ${s.pricing.note}</div>` : ''}
       </div>
       <div class="sol-footer">
