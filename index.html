@@ -769,11 +769,13 @@ function buildSolCard(s, compact) {
       <div class="sol-pricing">
         <div class="price-item">
           <div class="price-label">Mensalidade</div>
-          <div class="price-value">R$ ${s.pricing.monthly}<span class="price-period">/mês</span></div>
+          <div class="price-value">R$ ${contract && (contract.extra_monthly ?? 0) > 0 ? (s.pricing.monthly + contract.extra_monthly) : s.pricing.monthly}<span class="price-period">/mês</span></div>
         </div>
         <div class="price-item">
           <div class="price-label">Implantação</div>
-          <div class="price-value">R$ ${s.pricing.setup}<span class="price-period"> único</span></div>
+          ${contract && contract.charge_setup === false
+            ? `<div class="price-value" style="color:var(--green)">Isento</div>`
+            : `<div class="price-value">R$ ${s.pricing.setup}<span class="price-period"> único</span></div>`}
         </div>
         ${s.pricing.note ? `<div class="price-note">* ${s.pricing.note}</div>` : ''}
       </div>
@@ -838,10 +840,10 @@ function renderBilling() {
 
   const totalMonthly = active.reduce((sum, c) => {
     const sol = SOLUTIONS.find(s => s.id === c.solution_id)
-    return sum + (sol ? sol.pricing.monthly : 0)
+    return sum + (sol ? sol.pricing.monthly : 0) + (c.extra_monthly ?? 0)
   }, 0)
 
-  const totalSetup = myContracts.reduce((sum, c) => {
+  const totalSetup = myContracts.filter(c => c.charge_setup !== false).reduce((sum, c) => {
     const sol = SOLUTIONS.find(s => s.id === c.solution_id)
     return sum + (sol ? sol.pricing.setup : 0)
   }, 0)
@@ -872,16 +874,18 @@ function renderBilling() {
     const rows = active.map(c => {
       const sol = SOLUTIONS.find(s => s.id === c.solution_id)
       if (!sol) return ''
+      const extra = c.extra_monthly ?? 0
+      const total = sol.pricing.monthly + extra
       return `
         <div class="billing-row">
           <div class="billing-row-left">
             <span>${sol.icon}</span>
             <div>
               <div class="billing-row-name">${sol.name}</div>
-              <div class="billing-row-sub">Ativo</div>
+              <div class="billing-row-sub">${extra > 0 ? `Base R$ ${sol.pricing.monthly} + adicional R$ ${extra.toLocaleString('pt-BR',{minimumFractionDigits:2})}` : 'Ativo'}</div>
             </div>
           </div>
-          <div class="billing-row-value">R$ ${sol.pricing.monthly.toLocaleString('pt-BR')}/mês</div>
+          <div class="billing-row-value">R$ ${total.toLocaleString('pt-BR')}/mês</div>
         </div>`
     }).join('')
     const monthTotal = `
@@ -921,6 +925,17 @@ function renderBilling() {
     const setupRows = myContracts.map(c => {
       const sol = SOLUTIONS.find(s => s.id === c.solution_id)
       if (!sol) return ''
+      if (c.charge_setup === false) return `
+        <div class="billing-row">
+          <div class="billing-row-left">
+            <span>${sol.icon}</span>
+            <div>
+              <div class="billing-row-name">${sol.name}</div>
+              <div class="billing-row-sub">Implantação isenta</div>
+            </div>
+          </div>
+          <div class="billing-row-value extra">Isento</div>
+        </div>`
       const paid = c.status === 'ativo' || c.status === 'em_implantacao' || c.status === 'em_configuracao'
       return `
         <div class="billing-row">
