@@ -11,122 +11,194 @@
 
     :root {
       --bg: #0f172a; --card: #1e293b; --card2: #334155; --border: #334155;
-      --accent: #7c3aed; --accent-h: #6d28d9; --success: #10b981;
-      --danger: #ef4444; --text: #e2e8f0; --muted: #94a3b8;
+      --accent: #7c3aed; --accent-h: #6d28d9; --text: #e2e8f0; --muted: #94a3b8;
+      --green: #10b981; --blue: #3b82f6; --yellow: #f59e0b;
     }
 
-    #login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; }
-    #app { display: none; height: 100vh; }
-    .app-layout { display: flex; height: 100vh; }
-
-    aside { width: 240px; min-height: 100vh; background: var(--card); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid var(--border); }
-    .sidebar-header { padding: 18px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-    .sidebar-logo { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
-    .sidebar-title { font-weight: 700; font-size: 15px; }
-    .sidebar-sub { font-size: 11px; color: var(--muted); }
-    nav { flex: 1; padding: 10px; overflow-y: auto; }
-    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; cursor: pointer; color: var(--muted); font-size: 13px; transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
-    .nav-item:hover { background: var(--card2); color: var(--text); }
-    .nav-item.active { background: var(--accent); color: #fff; }
-    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
-    .company-tag { font-size: 11px; color: var(--muted); padding: 0 12px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    main { flex: 1; overflow-y: auto; padding: 28px 32px; }
-
-    .login-card { background: var(--card); border-radius: 16px; padding: 36px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
-    .login-logo-wrap { display: flex; justify-content: center; margin-bottom: 10px; }
-    .login-logo { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; }
-    .login-h { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 2px; }
-    .login-s { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
-
+    /* ── LOGIN ── */
+    #login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background: radial-gradient(ellipse at 60% 40%, #1e1040 0%, #0f172a 70%); }
+    .login-card { background: var(--card); border-radius: 20px; padding: 40px; width: 100%; max-width: 380px; border: 1px solid var(--border); box-shadow: 0 24px 64px rgba(0,0,0,.4); }
+    .login-logo-wrap { display: flex; justify-content: center; margin-bottom: 8px; }
+    .login-logo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+    .login-logo-fallback { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; font-size: 32px; }
+    .login-h { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .login-s { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 28px; }
     .form-group { margin-bottom: 14px; }
     label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
-    input[type=text], input[type=email], input[type=password] {
-      width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--text); font-size: 13px; outline: none;
+    input[type=email], input[type=password] {
+      width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text); font-size: 14px; outline: none;
       transition: border-color 0.15s; font-family: inherit;
     }
     input:focus { border-color: var(--accent); }
-
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
     .btn-primary:disabled { opacity: 0.6; cursor: default; }
     .btn-secondary { background: var(--card2); color: var(--text); }
     .btn-secondary:hover { background: #475569; }
-    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(239,68,68,0.4); }
-    .btn-danger:hover { background: rgba(239,68,68,0.1); }
-    .btn-sm { padding: 5px 10px; font-size: 12px; }
-    .btn-full { width: 100%; justify-content: center; }
+    .btn-full { width: 100%; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+    .err-box { color: #f87171; font-size: 12px; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
 
-    .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
-    .page-title { font-size: 21px; font-weight: 700; }
-    .page-sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
+    /* ── APP ── */
+    #app { display: none; height: 100vh; }
+    .app-layout { display: flex; height: 100vh; }
 
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
-    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
-    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-    .stat-value { font-size: 26px; font-weight: 700; }
+    /* ── SIDEBAR ── */
+    aside {
+      width: 232px; min-height: 100vh; background: #0d1829;
+      display: flex; flex-direction: column; flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,.06);
+    }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
+    .sidebar-logo-fallback { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .sidebar-brand { font-weight: 700; font-size: 15px; color: #fff; }
+    .sidebar-sub { font-size: 11px; color: var(--muted); }
+    nav { flex: 1; padding: 12px 8px; }
+    .nav-section { font-size: 10px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: .06em; padding: 0 8px; margin: 16px 0 6px; }
+    .nav-section:first-child { margin-top: 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 10px;
+      border-radius: 8px; cursor: pointer; color: var(--muted); font-size: 13px;
+      transition: all 0.15s; margin-bottom: 1px; border: none; background: none;
+      width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.06); color: var(--text); }
+    .nav-item.active { background: rgba(124,58,237,.2); color: #a78bfa; }
+    .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+    .sidebar-footer { padding: 12px 8px; border-top: 1px solid rgba(255,255,255,.06); }
+    .company-name { font-size: 11px; color: var(--muted); padding: 0 10px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    .inst-grid { display: grid; gap: 14px; }
-    .inst-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
-    .inst-header { display: flex; align-items: center; justify-content: space-between; }
-    .inst-name { font-size: 15px; font-weight: 600; }
-    .inst-phone { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .qr-wrap { margin-top: 14px; text-align: center; }
-    .qr-img { max-width: 200px; background: white; padding: 8px; border-radius: 8px; }
-    .qr-hint { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    /* ── MAIN ── */
+    main { flex: 1; overflow-y: auto; padding: 32px 36px; background: var(--bg); }
+    section { display: none; }
+    section.active { display: block; }
 
-    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
-    .bg-green { background: rgba(16,185,129,.15); color: #10b981; }
-    .bg-yellow { background: rgba(245,158,11,.15); color: #f59e0b; }
-    .bg-gray { background: rgba(148,163,184,.15); color: #94a3b8; }
+    /* ── PAGE HEADER ── */
+    .page-header { margin-bottom: 28px; }
+    .page-title { font-size: 22px; font-weight: 700; color: #fff; }
+    .page-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
 
-    .conv-layout { display: flex; height: calc(100vh - 130px); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
-    .conv-list { width: 270px; flex-shrink: 0; background: var(--card); border-right: 1px solid var(--border); overflow-y: auto; }
-    .conv-panel { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
-    .conv-item { padding: 13px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
-    .conv-item:hover { background: rgba(255,255,255,.04); }
-    .conv-item.active { background: rgba(124,58,237,.15); border-left: 3px solid var(--accent); }
-    .conv-phone { font-size: 13px; font-weight: 600; }
-    .conv-preview { font-size: 11px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .conv-empty-panel { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; }
-    .conv-header-bar { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--card); flex-shrink: 0; }
-    .conv-header-phone { font-weight: 600; font-size: 15px; }
-    .messages-wrap { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
-    .msg { max-width: 68%; padding: 9px 13px; border-radius: 12px; font-size: 13px; line-height: 1.5; word-break: break-word; }
-    .msg-user { background: var(--card); align-self: flex-start; border-bottom-left-radius: 3px; }
-    .msg-bot { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+    /* ── DASHBOARD ── */
+    .welcome-banner {
+      background: linear-gradient(135deg, #1e1040 0%, #1e293b 100%);
+      border: 1px solid rgba(124,58,237,.3); border-radius: 16px;
+      padding: 28px 32px; margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .welcome-text h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .welcome-text p { color: var(--muted); font-size: 14px; }
+    .welcome-emoji { font-size: 48px; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
+    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-label { font-size: 14px; font-weight: 600; color: #fff; }
 
-    .modal-bd { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; align-items: center; justify-content: center; }
+    /* ── SOLUTION CARDS ── */
+    .solutions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+    .sol-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; transition: border-color 0.2s, transform 0.2s;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .sol-card:hover { border-color: rgba(124,58,237,.4); transform: translateY(-2px); }
+    .sol-card-header { display: flex; align-items: flex-start; gap: 14px; }
+    .sol-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .sol-icon.green  { background: rgba(16,185,129,.15); }
+    .sol-icon.blue   { background: rgba(59,130,246,.15); }
+    .sol-icon.purple { background: rgba(124,58,237,.15); }
+    .sol-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sol-tagline { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .sol-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; }
+    .sol-how { background: rgba(255,255,255,.03); border-radius: 10px; padding: 14px; }
+    .sol-how-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+    .sol-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cbd5e1; margin-bottom: 6px; }
+    .sol-step:last-child { margin-bottom: 0; }
+    .step-num { width: 18px; height: 18px; border-radius: 50%; background: rgba(124,58,237,.3); color: #a78bfa; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sol-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .badge-active     { background: rgba(16,185,129,.15); color: #10b981; }
+    .badge-pending    { background: rgba(245,158,11,.15); color: #f59e0b; }
+    .badge-available  { background: rgba(148,163,184,.1); color: var(--muted); border: 1px solid var(--border); }
+    .badge-contracted { background: rgba(124,58,237,.15); color: #a78bfa; }
+
+    /* ── STATUS TIMELINE ── */
+    .my-solutions-list { display: flex; flex-direction: column; gap: 14px; }
+    .my-sol-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+    .my-sol-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .my-sol-info { flex: 1; }
+    .my-sol-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .my-sol-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .timeline { display: flex; align-items: flex-start; }
+    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+    .timeline-step:not(:last-child)::after {
+      content: ''; position: absolute; top: 14px; left: calc(50% + 14px);
+      width: calc(100% - 28px); height: 2px; background: var(--border);
+    }
+    .timeline-step.done:not(:last-child)::after { background: var(--green); }
+    .tl-dot {
+      width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border);
+      background: var(--bg); display: flex; align-items: center; justify-content: center;
+      font-size: 12px; z-index: 1; margin-bottom: 8px;
+    }
+    .timeline-step.done .tl-dot { border-color: var(--green); background: rgba(16,185,129,.15); color: var(--green); }
+    .timeline-step.current .tl-dot { border-color: var(--yellow); background: rgba(245,158,11,.15); color: var(--yellow); animation: pulse 2s infinite; }
+    .timeline-step.final .tl-dot { border-color: var(--green); background: var(--green); color: #fff; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)} 50%{box-shadow:0 0 0 6px rgba(245,158,11,0)} }
+    .tl-label { font-size: 11px; color: var(--muted); text-align: center; font-weight: 500; }
+    .timeline-step.done .tl-label    { color: var(--green); }
+    .timeline-step.current .tl-label { color: var(--yellow); }
+    .timeline-step.final .tl-label   { color: var(--green); }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state p { font-size: 14px; margin-bottom: 20px; }
+
+    /* ── MODAL ── */
+    .modal-bd { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100; align-items: center; justify-content: center; }
     .modal-bd.open { display: flex; }
-    .modal { background: var(--card); border-radius: 16px; padding: 26px; width: 100%; max-width: 440px; border: 1px solid var(--border); }
-    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-    .modal-title { font-size: 16px; font-weight: 700; }
-    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 6px; }
-    .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+    .modal { background: var(--card); border-radius: 20px; padding: 28px; width: 100%; max-width: 460px; border: 1px solid var(--border); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { font-size: 17px; font-weight: 700; color: #fff; }
+    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 24px; line-height: 1; padding: 0 4px; }
+    .modal-close:hover { color: var(--text); }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .modal-sol-preview { background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .modal-sol-icon { font-size: 28px; }
+    .modal-sol-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .modal-sol-tagline { font-size: 12px; color: var(--muted); }
+    .modal-info { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    #toast-wrap { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
-    .toast { background: var(--card2); border-radius: 10px; padding: 11px 15px; font-size: 13px; border-left: 3px solid var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,.3); animation: tin .2s ease; max-width: 300px; }
-    .toast.success { border-color: var(--success); }
-    .toast.error { border-color: var(--danger); }
-    @keyframes tin { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; } }
+    /* ── TOAST ── */
+    #toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: var(--card2); border-radius: 12px; padding: 12px 16px; font-size: 13px; border-left: 3px solid var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,.35); animation: slide-in .2s ease; max-width: 320px; }
+    .toast.success { border-color: var(--green); }
+    .toast.error   { border-color: #ef4444; }
+    @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; } }
 
     .hidden { display: none !important; }
-    .flex { display: flex; } .items-center { align-items: center; } .gap-2 { gap: 8px; }
-    .flex-1 { flex: 1; } .mt-4 { margin-top: 16px; }
-    .text-sm { font-size: 13px; } .text-muted { color: var(--muted); } .text-center { text-align: center; }
-    .err-box { color: var(--danger); font-size: 12px; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
   </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo-wrap">
-      <img src="thalamus.png" alt="Thalamus" class="login-logo" onerror="this.style.display='none'">
+      <img src="thalamus.png" alt="Thalamus" class="login-logo" id="login-img"
+           onerror="this.classList.add('hidden');document.getElementById('login-logo-fb').classList.remove('hidden')">
+      <div class="login-logo-fallback hidden" id="login-logo-fb">🧠</div>
     </div>
     <div class="login-h">Thalamus</div>
+    <div class="login-s">Soluções de IA para o seu negócio</div>
     <div class="form-group">
       <label>E-mail</label>
       <input type="email" id="l-email" placeholder="seu@email.com" autocomplete="username">
@@ -136,81 +208,124 @@
       <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
     </div>
     <div id="l-err" class="err-box hidden"></div>
-    <button class="btn btn-primary btn-full mt-4" id="l-btn" onclick="doLogin()">Entrar</button>
-    <p class="text-center text-sm text-muted" style="margin-top:16px">Thalamus · Acesso restrito</p>
+    <button class="btn btn-primary btn-full" style="margin-top:16px" id="l-btn" onclick="doLogin()">Entrar</button>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div class="app-layout">
+
+    <!-- SIDEBAR -->
     <aside>
       <div class="sidebar-header">
-        <img src="thalamus.png" alt="Thalamus" class="sidebar-logo" onerror="this.style.display='none'">
+        <img src="thalamus.png" alt="Thalamus" class="sidebar-logo" id="sidebar-img"
+             onerror="this.classList.add('hidden');document.getElementById('sidebar-logo-fb').classList.remove('hidden')">
+        <div class="sidebar-logo-fallback hidden" id="sidebar-logo-fb">🧠</div>
         <div>
-          <div class="sidebar-title">Thalamus</div>
+          <div class="sidebar-brand">Thalamus</div>
+          <div class="sidebar-sub">Portal do Cliente</div>
         </div>
       </div>
       <nav>
-        <button class="nav-item active" id="nav-dashboard" onclick="go('dashboard')"><span>📊</span> Dashboard</button>
-        <button class="nav-item" id="nav-connect" onclick="go('connect')"><span>📱</span> Conectar WhatsApp</button>
-        <button class="nav-item" id="nav-conversations" onclick="go('conversations')"><span>💬</span> Conversas</button>
+        <div class="nav-section">Menu</div>
+        <button class="nav-item active" id="nav-dashboard" onclick="go('dashboard')">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-item" id="nav-catalog" onclick="go('catalog')">
+          <span class="nav-icon">🛍️</span> Catálogo de Soluções
+        </button>
+        <button class="nav-item" id="nav-my-solutions" onclick="go('my-solutions')">
+          <span class="nav-icon">⚡</span> Minhas Soluções
+        </button>
       </nav>
       <div class="sidebar-footer">
-        <div class="company-tag" id="company-tag"></div>
-        <button class="nav-item" onclick="doLogout()"><span>🚪</span> Sair</button>
+        <div class="company-name" id="company-name-tag"></div>
+        <button class="nav-item" onclick="doLogout()">
+          <span class="nav-icon">🚪</span> Sair
+        </button>
       </div>
     </aside>
 
+    <!-- MAIN -->
     <main>
-      <section id="sec-dashboard">
-        <div class="page-header">
-          <div><div class="page-title">Dashboard</div><div class="page-sub" id="dash-sub"></div></div>
-        </div>
-        <div class="stat-grid">
-          <div class="stat-card"><div class="stat-label">Conversas Abertas</div><div class="stat-value" id="s-open">—</div></div>
-          <div class="stat-card"><div class="stat-label">Conversas Encerradas</div><div class="stat-value" id="s-closed">—</div></div>
-          <div class="stat-card"><div class="stat-label">WhatsApp Conectado</div><div class="stat-value" id="s-wa">—</div></div>
-          <div class="stat-card"><div class="stat-label">Bot Ativo</div><div class="stat-value" id="s-bot">—</div></div>
-        </div>
-      </section>
 
-      <section id="sec-connect" class="hidden">
-        <div class="page-header">
-          <div><div class="page-title">Conectar WhatsApp</div><div class="page-sub">Gerencie suas instâncias</div></div>
-          <button class="btn btn-primary" onclick="openInstModal()">+ Nova Instância</button>
+      <!-- DASHBOARD -->
+      <section id="sec-dashboard" class="active">
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <h2 id="welcome-company">Bem-vindo!</h2>
+            <p>Gerencie suas soluções de IA e acompanhe os resultados.</p>
+          </div>
+          <div class="welcome-emoji">🧠</div>
         </div>
-        <div id="inst-list" class="inst-grid"></div>
-      </section>
-
-      <section id="sec-conversations" class="hidden">
-        <div class="page-header">
-          <div><div class="page-title">Conversas</div></div>
-        </div>
-        <div class="conv-layout">
-          <div class="conv-list" id="conv-list-el"></div>
-          <div class="conv-panel" id="conv-panel">
-            <div class="conv-empty-panel">Selecione uma conversa</div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Soluções Contratadas</div>
+            <div class="stat-value" id="stat-contracted">—</div>
+            <div class="stat-sub">no total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Soluções Ativas</div>
+            <div class="stat-value" id="stat-active">—</div>
+            <div class="stat-sub">funcionando agora</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Em Implantação</div>
+            <div class="stat-value" id="stat-pending">—</div>
+            <div class="stat-sub">sendo configuradas</div>
           </div>
         </div>
+        <div class="section-header">
+          <div class="section-label">Soluções Disponíveis</div>
+          <button class="btn btn-sm btn-primary" onclick="go('catalog')">Ver catálogo →</button>
+        </div>
+        <div class="solutions-grid" id="dash-solutions-preview"></div>
       </section>
+
+      <!-- CATALOG -->
+      <section id="sec-catalog">
+        <div class="page-header">
+          <div class="page-title">Catálogo de Soluções</div>
+          <div class="page-sub">Escolha a solução ideal para o seu negócio e contrate com um clique.</div>
+        </div>
+        <div class="solutions-grid" id="catalog-grid"></div>
+      </section>
+
+      <!-- MY SOLUTIONS -->
+      <section id="sec-my-solutions">
+        <div class="page-header">
+          <div class="page-title">Minhas Soluções</div>
+          <div class="page-sub">Acompanhe o status e a implantação das suas soluções contratadas.</div>
+        </div>
+        <div id="my-solutions-list" class="my-solutions-list"></div>
+      </section>
+
     </main>
   </div>
 </div>
 
-<div class="modal-bd" id="modal-inst">
+<!-- MODAL: Contratar -->
+<div class="modal-bd" id="modal-contract">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-title">Nova Instância WhatsApp</div>
-      <button class="modal-close" onclick="closeModal('modal-inst')">×</button>
+      <div class="modal-title">Contratar Solução</div>
+      <button class="modal-close" onclick="closeModal('modal-contract')">×</button>
     </div>
-    <div class="form-group">
-      <label>Nome da instância</label>
-      <input type="text" id="inst-name-inp" placeholder="ex: minha-loja (sem espaços)">
+    <div class="modal-sol-preview">
+      <div class="modal-sol-icon" id="modal-sol-icon"></div>
+      <div>
+        <div class="modal-sol-name" id="modal-sol-name"></div>
+        <div class="modal-sol-tagline" id="modal-sol-tagline"></div>
+      </div>
     </div>
-    <p class="text-sm text-muted">Use apenas letras, números e hífens.</p>
+    <div class="modal-info">
+      Ao confirmar, nossa equipe iniciará o processo de implantação e entrará em contato em até
+      <strong style="color:#fff">48 horas úteis</strong> para alinhar os próximos passos.
+    </div>
     <div class="modal-foot">
-      <button class="btn btn-secondary" onclick="closeModal('modal-inst')">Cancelar</button>
-      <button class="btn btn-primary" id="create-inst-btn" onclick="createInstance()">Criar e Conectar</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-contract')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-confirm-contract" onclick="confirmContract()">Confirmar contratação</button>
     </div>
   </div>
 </div>
@@ -221,21 +336,66 @@
 const SUPABASE_URL = 'https://emothfrrdtbhkmpsffhc.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtb3RoZnJyZHRiaGttcHNmZmhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMjI0NjksImV4cCI6MjA5Njc5ODQ2OX0.E3-xFwGYBHFdYuLlzqpzLDk1V2ffAkHoQFt6MbAQRWY'
 
+const SOLUTIONS = [
+  {
+    id: 'conexa',
+    name: 'Portal de Cobrança — Conexa',
+    icon: '💰',
+    icon_class: 'green',
+    tagline: 'Automação inteligente de cobranças',
+    description: 'Centralize e automatize todo o processo de cobrança da sua empresa. A Conexa identifica inadimplentes, dispara comunicações personalizadas e negocia automaticamente via múltiplos canais.',
+    steps: [
+      'Integração com seu sistema financeiro',
+      'IA identifica e prioriza inadimplentes',
+      'Cobrança automática multicanal (WhatsApp, e-mail, SMS)'
+    ]
+  },
+  {
+    id: 'dashboard',
+    name: 'Dashboard de Resultados',
+    icon: '📊',
+    icon_class: 'blue',
+    tagline: 'Visibilidade total dos seus indicadores',
+    description: 'Painéis personalizados com os KPIs mais importantes do seu negócio, atualizados em tempo real. Tome decisões baseadas em dados, sem depender de relatórios manuais.',
+    steps: [
+      'Mapeamento das fontes de dados da empresa',
+      'Criação de dashboards personalizados',
+      'Acesso em tempo real via link seguro'
+    ]
+  },
+  {
+    id: 'whatsapp-agent',
+    name: 'Agente de IA — WhatsApp',
+    icon: '🤖',
+    icon_class: 'purple',
+    tagline: 'Atendimento 24/7 com inteligência artificial',
+    description: 'Um agente treinado com o conhecimento da sua empresa atende seus clientes no WhatsApp a qualquer hora. Responde dúvidas, qualifica leads e encaminha para humanos quando necessário.',
+    steps: [
+      'Configuração e treinamento do agente',
+      'Integração com número WhatsApp da empresa',
+      'Ativação e monitoramento das conversas'
+    ]
+  }
+]
+
+const TIMELINE_STEPS = [
+  { key: 'contratado',      label: 'Contratado' },
+  { key: 'em_configuracao', label: 'Em configuração' },
+  { key: 'em_implantacao',  label: 'Em implantação' },
+  { key: 'ativo',           label: 'Ativo' }
+]
+
+const STATUS_ORDER = { contratado: 0, em_configuracao: 1, em_implantacao: 2, ativo: 3 }
+
 let sb, session, company
-let currentConvId = null
-let rtChannels = []
+let myContracts = []
+let pendingContractId = null
 
 async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   const { data: { session: s } } = await sb.auth.getSession()
-  if (s) {
-    session = s
-    await loadCompany()
-    showApp()
-    go('dashboard')
-  } else {
-    showLogin()
-  }
+  if (s) { session = s; await loadCompany(); showApp() }
+  else showLogin()
   document.getElementById('l-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin() })
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') document.querySelectorAll('.modal-bd.open').forEach(m => m.classList.remove('open'))
@@ -260,13 +420,11 @@ async function doLogin() {
   session = data.session
   await loadCompany()
   showApp()
-  go('dashboard')
 }
 
 async function doLogout() {
-  rtChannels.forEach(c => sb.removeChannel(c)); rtChannels = []
   await sb.auth.signOut()
-  session = null; company = null
+  session = null; company = null; myContracts = []
   document.getElementById('app').style.display = 'none'
   showLogin()
 }
@@ -277,276 +435,184 @@ function showLogin() {
   document.getElementById('l-email').value = ''
   document.getElementById('l-pwd').value = ''
   document.getElementById('l-err').classList.add('hidden')
-  const btn = document.getElementById('l-btn'); btn.disabled = false; btn.textContent = 'Entrar'
-}
-
-function showApp() {
-  document.getElementById('login-screen').style.display = 'none'
-  document.getElementById('app').style.display = 'block'
+  const btn = document.getElementById('l-btn')
+  btn.disabled = false; btn.textContent = 'Entrar'
 }
 
 async function loadCompany() {
   const { data } = await sb.from('companies').select('*').eq('user_id', session.user.id).single()
   company = data
   if (company) {
-    document.getElementById('company-tag').textContent = company.name
-    document.getElementById('dash-sub').textContent = company.name
+    document.getElementById('company-name-tag').textContent = company.name
+    document.getElementById('welcome-company').textContent  = `Olá, ${company.name}!`
   }
+  await loadContracts()
 }
 
-function go(sec) {
+async function loadContracts() {
+  if (!company) return
+  const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
+  myContracts = data || []
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('app').style.display = 'block'
+  go('dashboard')
+}
+
+async function go(sec) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
   const nb = document.getElementById('nav-' + sec)
   if (nb) nb.classList.add('active')
-  document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'))
-  document.getElementById('sec-' + sec).classList.remove('hidden')
-  if (sec !== 'conversations' && sec !== 'connect') {
-    rtChannels.forEach(c => sb.removeChannel(c)); rtChannels = []
-  }
-  if (sec === 'dashboard')     loadDashboard()
-  if (sec === 'connect')       loadConnect()
-  if (sec === 'conversations') loadConvs()
+  document.querySelectorAll('main > section').forEach(s => s.classList.remove('active'))
+  document.getElementById('sec-' + sec).classList.add('active')
+  await loadContracts()
+  if (sec === 'dashboard')    renderDashboard()
+  if (sec === 'catalog')      renderCatalog()
+  if (sec === 'my-solutions') renderMySolutions()
 }
 
-async function loadDashboard() {
-  if (!company) return
-  const [r1, r2, r3, r4] = await Promise.all([
-    sb.from('conversations').select('*', { count: 'exact', head: true }).eq('company_id', company.id).eq('status', 'open'),
-    sb.from('conversations').select('*', { count: 'exact', head: true }).eq('company_id', company.id).eq('status', 'closed'),
-    sb.from('whatsapp_instances').select('status').eq('company_id', company.id),
-    sb.from('bot_configs').select('active').eq('company_id', company.id).single()
-  ])
-  document.getElementById('s-open').textContent   = r1.count ?? 0
-  document.getElementById('s-closed').textContent = r2.count ?? 0
-  const insts = r3.data || []
-  const conn  = insts.filter(i => i.status === 'connected').length
-  document.getElementById('s-wa').textContent  = insts.length ? `${conn}/${insts.length}` : '—'
-  document.getElementById('s-bot').textContent = r4.data?.active ? '✓ Sim' : '✗ Não'
+function renderDashboard() {
+  const total   = myContracts.length
+  const active  = myContracts.filter(c => c.status === 'ativo').length
+  const pending = myContracts.filter(c => c.status !== 'ativo').length
+  document.getElementById('stat-contracted').textContent = total
+  document.getElementById('stat-active').textContent     = active
+  document.getElementById('stat-pending').textContent    = pending
+  document.getElementById('dash-solutions-preview').innerHTML = SOLUTIONS.map(s => buildSolCard(s, true)).join('')
 }
 
-async function loadConnect() {
-  if (!company) return
-  const { data } = await sb.from('whatsapp_instances').select('*').eq('company_id', company.id).order('created_at')
-  renderInsts(data || [])
-  const existing = rtChannels.find(c => c.topic?.includes('inst-rt'))
-  if (!existing) {
-    const ch = sb.channel('inst-rt-' + company.id)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'whatsapp_instances', filter: `company_id=eq.${company.id}` }, () => loadConnect())
-      .subscribe()
-    rtChannels.push(ch)
-  }
+function renderCatalog() {
+  document.getElementById('catalog-grid').innerHTML = SOLUTIONS.map(s => buildSolCard(s, false)).join('')
 }
 
-function renderInsts(insts) {
-  const el = document.getElementById('inst-list')
-  if (!insts.length) {
-    el.innerHTML = ''
-    const empty = document.createElement('div')
-    empty.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--muted);font-size:13px'
-    empty.textContent = 'Nenhuma instância. Clique em "+ Nova Instância" para criar.'
-    el.appendChild(empty)
-    return
-  }
-  el.innerHTML = ''
-  insts.forEach(inst => {
-    const card = document.createElement('div')
-    card.className = 'inst-card'
-    const statusBadge = inst.status === 'connected'
-      ? '<span class="badge bg-green">● Conectado</span>'
-      : inst.status === 'connecting'
-      ? '<span class="badge bg-yellow">◌ Conectando</span>'
-      : '<span class="badge bg-gray">○ Desconectado</span>'
-    const header = document.createElement('div')
-    header.className = 'inst-header'
-    header.innerHTML = `
-      <div>
-        <div class="inst-name">${esc(inst.instance_name)}</div>
-        ${inst.phone ? `<div class="inst-phone">${esc(inst.phone)}</div>` : ''}
-      </div>
-      <div class="flex items-center gap-2">
-        ${statusBadge}
-        <button class="btn btn-danger btn-sm" data-iid="${esc(inst.id)}" data-iname="${esc(inst.instance_name)}">Excluir</button>
-      </div>`
-    header.querySelector('[data-iid]').addEventListener('click', e => {
-      deleteInstance(e.currentTarget.dataset.iid, e.currentTarget.dataset.iname)
-    })
-    card.appendChild(header)
-    if (inst.qr_code && inst.status !== 'connected') {
-      const qrWrap = document.createElement('div')
-      qrWrap.className = 'qr-wrap'
-      const hint = document.createElement('p')
-      hint.className = 'qr-hint'
-      hint.textContent = 'Escaneie o QR Code com seu WhatsApp:'
-      const img = document.createElement('img')
-      img.className = 'qr-img'; img.alt = 'QR Code'; img.src = inst.qr_code
-      qrWrap.appendChild(hint); qrWrap.appendChild(img)
-      card.appendChild(qrWrap)
-    }
-    el.appendChild(card)
-  })
-}
+function buildSolCard(s, compact) {
+  const contract = myContracts.find(c => c.solution_id === s.id)
+  let badgeHtml, footerBtn
 
-function openInstModal() {
-  document.getElementById('inst-name-inp').value = ''
-  openModal('modal-inst')
-}
-
-async function createInstance() {
-  const name = document.getElementById('inst-name-inp').value.trim()
-  if (!name) return
-  const btn = document.getElementById('create-inst-btn')
-  btn.disabled = true; btn.textContent = 'Criando...'
-  try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/create-instance`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({ instance_name: name })
-    })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error || 'Erro ao criar instância')
-    closeModal('modal-inst')
-    toast('Instância criada! Aguarde o QR Code...', 'success')
-    loadConnect()
-  } catch (e) {
-    toast(e.message, 'error')
-  } finally {
-    btn.disabled = false; btn.textContent = 'Criar e Conectar'
-  }
-}
-
-async function deleteInstance(id, name) {
-  if (!confirm(`Excluir a instância "${name}"?`)) return
-  try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/delete-instance`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({ instance_id: id, instance_name: name })
-    })
-    if (!res.ok) throw new Error()
-    toast('Instância excluída.', 'success')
-  } catch {
-    await sb.from('whatsapp_instances').delete().eq('id', id)
-    toast('Instância removida.', 'success')
-  }
-  loadConnect()
-}
-
-async function loadConvs() {
-  if (!company) return
-  const { data } = await sb.from('conversations')
-    .select('id, customer_phone, customer_name, status, updated_at, messages(content, role, created_at)')
-    .eq('company_id', company.id)
-    .order('updated_at', { ascending: false })
-  renderConvList(data || [])
-  const existing = rtChannels.find(c => c.topic?.includes('convs-rt'))
-  if (!existing) {
-    const ch = sb.channel('convs-rt-' + company.id)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations', filter: `company_id=eq.${company.id}` }, () => loadConvs())
-      .subscribe()
-    rtChannels.push(ch)
-  }
-}
-
-function renderConvList(convs) {
-  const el = document.getElementById('conv-list-el')
-  if (!convs.length) {
-    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Sem conversas ainda.</div>'
-    return
-  }
-  el.innerHTML = ''
-  convs.forEach(c => {
-    const msgs = c.messages || []
-    const last = msgs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
-    const item = document.createElement('div')
-    item.className = `conv-item${currentConvId === c.id ? ' active' : ''}`
-    item.addEventListener('click', () => openConv(c.id, c.customer_phone, c.status))
-    const top = document.createElement('div')
-    top.className = 'flex items-center gap-2'
-    const phone = document.createElement('div')
-    phone.className = 'conv-phone flex-1'
-    phone.textContent = c.customer_phone
-    const badge = document.createElement('span')
-    badge.className = `badge ${c.status === 'open' ? 'bg-green' : 'bg-gray'}`
-    badge.style.fontSize = '10px'
-    badge.textContent = c.status === 'open' ? 'aberta' : 'fechada'
-    top.appendChild(phone); top.appendChild(badge)
-    const preview = document.createElement('div')
-    preview.className = 'conv-preview'
-    preview.textContent = last ? last.content.substring(0, 50) : 'Sem mensagens'
-    item.appendChild(top); item.appendChild(preview)
-    el.appendChild(item)
-  })
-}
-
-async function openConv(id, phone, status) {
-  currentConvId = id
-  loadConvs()
-  const { data: msgs } = await sb.from('messages').select('*').eq('conversation_id', id).order('created_at')
-  const panel = document.getElementById('conv-panel')
-  panel.innerHTML = ''
-  const header = document.createElement('div')
-  header.className = 'conv-header-bar'
-  const title = document.createElement('div')
-  title.className = 'conv-header-phone'
-  title.textContent = phone
-  header.appendChild(title)
-  if (status === 'open') {
-    const closeBtn = document.createElement('button')
-    closeBtn.className = 'btn btn-secondary btn-sm'
-    closeBtn.textContent = 'Fechar conversa'
-    closeBtn.addEventListener('click', () => closeConv(id))
-    header.appendChild(closeBtn)
+  if (contract) {
+    badgeHtml = contract.status === 'ativo'
+      ? '<span class="badge badge-active">✓ Ativo</span>'
+      : '<span class="badge badge-contracted">⟳ Em implantação</span>'
+    footerBtn = `<button class="btn btn-sm btn-secondary" onclick="go('my-solutions')">Ver status</button>`
   } else {
-    const tag = document.createElement('span')
-    tag.className = 'badge bg-gray'
-    tag.textContent = 'Fechada'
-    header.appendChild(tag)
+    badgeHtml = '<span class="badge badge-available">Disponível</span>'
+    footerBtn = `<button class="btn btn-sm btn-primary" onclick="openContractModal('${s.id}')">Contratar</button>`
   }
-  panel.appendChild(header)
-  const wrap = document.createElement('div')
-  wrap.className = 'messages-wrap'; wrap.id = 'msgs-wrap'
-  ;(msgs || []).forEach(m => {
-    const div = document.createElement('div')
-    div.className = `msg ${m.role === 'user' ? 'msg-user' : 'msg-bot'}`
-    div.textContent = m.content
-    wrap.appendChild(div)
+
+  return `
+    <div class="sol-card">
+      <div class="sol-card-header">
+        <div class="sol-icon ${s.icon_class}">${s.icon}</div>
+        <div>
+          <div class="sol-name">${s.name}</div>
+          <div class="sol-tagline">${s.tagline}</div>
+        </div>
+      </div>
+      <div class="sol-desc">${s.description}</div>
+      ${!compact ? `
+      <div class="sol-how">
+        <div class="sol-how-title">Como funciona</div>
+        ${s.steps.map((st, i) => `
+          <div class="sol-step">
+            <div class="step-num">${i + 1}</div>
+            ${st}
+          </div>`).join('')}
+      </div>` : ''}
+      <div class="sol-footer">
+        ${badgeHtml}
+        ${footerBtn}
+      </div>
+    </div>`
+}
+
+function renderMySolutions() {
+  const el = document.getElementById('my-solutions-list')
+  if (!myContracts.length) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🛍️</div>
+        <p>Você ainda não contratou nenhuma solução.</p>
+        <button class="btn btn-primary" onclick="go('catalog')">Explorar catálogo</button>
+      </div>`
+    return
+  }
+  el.innerHTML = myContracts.map(c => {
+    const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+    if (!sol) return ''
+    const statusIdx = STATUS_ORDER[c.status] ?? 0
+    const isFinal   = statusIdx === TIMELINE_STEPS.length - 1
+    const date = new Date(c.contracted_at).toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' })
+
+    const timelineHtml = TIMELINE_STEPS.map((step, i) => {
+      let cls  = ''
+      let icon = '○'
+      if (i < statusIdx)                      { cls = 'done';    icon = '✓' }
+      else if (i === statusIdx && isFinal)    { cls = 'final';   icon = '✓' }
+      else if (i === statusIdx)               { cls = 'current'; icon = '◎' }
+      return `
+        <div class="timeline-step ${cls}">
+          <div class="tl-dot">${icon}</div>
+          <div class="tl-label">${step.label}</div>
+        </div>`
+    }).join('')
+
+    return `
+      <div class="my-sol-card">
+        <div class="my-sol-header">
+          <div class="sol-icon ${sol.icon_class}" style="width:44px;height:44px;font-size:20px">${sol.icon}</div>
+          <div class="my-sol-info">
+            <div class="my-sol-name">${sol.name}</div>
+            <div class="my-sol-date">Contratado em ${date}</div>
+          </div>
+          ${c.status === 'ativo'
+            ? '<span class="badge badge-active">✓ Ativo</span>'
+            : '<span class="badge badge-pending">⟳ Em andamento</span>'}
+        </div>
+        <div class="timeline">${timelineHtml}</div>
+      </div>`
+  }).join('')
+}
+
+function openContractModal(solutionId) {
+  const sol = SOLUTIONS.find(s => s.id === solutionId)
+  if (!sol) return
+  pendingContractId = solutionId
+  document.getElementById('modal-sol-icon').textContent    = sol.icon
+  document.getElementById('modal-sol-name').textContent    = sol.name
+  document.getElementById('modal-sol-tagline').textContent = sol.tagline
+  document.getElementById('modal-contract').classList.add('open')
+}
+
+async function confirmContract() {
+  if (!pendingContractId || !company) return
+  const btn = document.getElementById('btn-confirm-contract')
+  btn.disabled = true; btn.textContent = 'Processando...'
+  const { error } = await sb.from('company_solutions').insert({
+    company_id:    company.id,
+    solution_id:   pendingContractId,
+    status:        'contratado',
+    contracted_at: new Date().toISOString()
   })
-  panel.appendChild(wrap)
-  wrap.scrollTop = wrap.scrollHeight
-  rtChannels.filter(c => c.topic?.startsWith('msgs-rt')).forEach(c => sb.removeChannel(c))
-  const ch = sb.channel('msgs-rt-' + id)
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${id}` }, p => {
-      const w = document.getElementById('msgs-wrap')
-      if (!w) return
-      const div = document.createElement('div')
-      div.className = `msg ${p.new.role === 'user' ? 'msg-user' : 'msg-bot'}`
-      div.textContent = p.new.content
-      w.appendChild(div); w.scrollTop = w.scrollHeight
-    }).subscribe()
-  rtChannels.push(ch)
+  btn.disabled = false; btn.textContent = 'Confirmar contratação'
+  closeModal('modal-contract')
+  if (error) { toast('Erro ao processar. Tente novamente.', 'error'); return }
+  toast('Solução contratada! Nossa equipe entrará em contato em breve.', 'success')
+  pendingContractId = null
+  await loadContracts()
+  renderCatalog()
 }
 
-async function closeConv(id) {
-  await sb.from('conversations').update({ status: 'closed' }).eq('id', id)
-  toast('Conversa encerrada.', 'success')
-  currentConvId = null
-  document.getElementById('conv-panel').innerHTML = '<div class="conv-empty-panel">Selecione uma conversa</div>'
-  loadConvs()
-}
-
-function esc(str) {
-  if (!str) return ''
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-}
-function openModal(id)  { document.getElementById(id).classList.add('open') }
 function closeModal(id) { document.getElementById(id).classList.remove('open') }
+
 function toast(msg, type = '') {
   const wrap = document.getElementById('toast-wrap')
-  const div = document.createElement('div')
+  const div  = document.createElement('div')
   div.className = `toast ${type}`
   div.textContent = msg
   wrap.appendChild(div)
-  setTimeout(() => div.remove(), 4000)
+  setTimeout(() => div.remove(), 4500)
 }
 
 init()
