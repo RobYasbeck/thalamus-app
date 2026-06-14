@@ -546,6 +546,13 @@
       Ao confirmar, nossa equipe iniciará o processo de implantação e entrará em contato em até
       <strong style="color:#fff">48 horas úteis</strong> para alinhar os próximos passos.
     </div>
+    <div style="margin-top:16px">
+      <label style="display:block;font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase;font-family:'Rajdhani',sans-serif">Telefone para contato</label>
+      <input id="contract-phone" type="tel" placeholder="(00) 00000-0000"
+        style="width:100%;padding:10px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-size:15px;outline:none;font-family:'Rajdhani',sans-serif"
+        oninput="this.style.borderColor='rgba(124,58,237,.6)'"
+        onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+    </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal('modal-contract')">Cancelar</button>
       <button class="btn btn-primary" id="btn-confirm-contract" onclick="confirmContract()">Confirmar contratação</button>
@@ -1130,6 +1137,7 @@ function openContractModal(solutionId) {
   const iconEl = document.getElementById('modal-sol-icon')
   iconEl.className = 'modal-sol-icon sol-icon ' + sol.icon_class
   iconEl.innerHTML = sol.icon
+  document.getElementById('contract-phone').value = ''
   document.getElementById('modal-sol-name').textContent    = sol.name
   document.getElementById('modal-sol-tagline').textContent = sol.tagline
   document.getElementById('modal-contract').classList.add('open')
@@ -1139,10 +1147,12 @@ async function confirmContract() {
   if (!pendingContractId || !company) return
   const btn = document.getElementById('btn-confirm-contract')
   btn.disabled = true; btn.textContent = 'Enviando solicitação...'
+  const phone = document.getElementById('contract-phone').value.trim() || null
   const { error } = await sb.from('contract_requests').insert({
     company_id:   company.id,
     solution_id:  pendingContractId,
     status:       'pendente',
+    phone,
     requested_at: new Date().toISOString()
   })
   btn.disabled = false; btn.textContent = 'Confirmar contratação'
