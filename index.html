@@ -618,7 +618,7 @@ const SOLUTIONS = [
   },
   {
     id: 'whatsapp-agent',
-    name: 'Agente de IA — Agendamento WhatsApp',
+    name: 'Agente de IA WhatsApp — Agendamento',
     icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
     icon_class: 'img-purple',
     tagline: 'Agendamentos automáticos 24/7 com inteligência artificial',
@@ -632,7 +632,7 @@ const SOLUTIONS = [
   },
   {
     id: 'whatsapp-sdr',
-    name: 'Agente de IA — SDR (Vendas)',
+    name: 'Agente de IA WhatsApp — SDR',
     icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
     icon_class: 'img-purple',
     tagline: 'Qualificação de leads com inteligência artificial',
@@ -646,13 +646,27 @@ const SOLUTIONS = [
   },
   {
     id: 'whatsapp-support',
-    name: 'Agente de IA — Suporte',
+    name: 'Agente de IA WhatsApp — Suporte',
     icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
     icon_class: 'img-purple',
     tagline: 'Suporte técnico 24/7 com inteligência artificial',
     description: 'Um agente treinado com os fluxos e base de conhecimento da sua empresa resolve dúvidas, abre chamados e oferece suporte técnico para seus clientes a qualquer hora do dia.',
     steps: [
       'Configuração e treinamento do agente de suporte',
+      'Integração com número WhatsApp da empresa',
+      'Ativação e monitoramento das conversas'
+    ],
+    pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
+  },
+  {
+    id: 'whatsapp-secretary',
+    name: 'Agente de IA WhatsApp — Secretária',
+    icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
+    icon_class: 'img-purple',
+    tagline: 'Recepção virtual e agendamento automático 24/7',
+    description: 'Uma secretária virtual treinada com o conhecimento da sua empresa recebe clientes no WhatsApp, gerencia agendamentos, responde dúvidas e encaminha para o responsável humano quando necessário.',
+    steps: [
+      'Configuração e treinamento da secretária virtual',
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
@@ -865,7 +879,7 @@ function renderProduct(contractId) {
   const statusSt   = { contratado:'badge-contracted', em_configuracao:'badge-contracted', em_implantacao:'badge-contracted', ativo:'badge-active' }[c.status] ?? 'badge-contracted'
   const statusLbl  = { contratado:'Contratado', em_configuracao:'Em configuração', em_implantacao:'Em implantação', ativo:'Ativo' }[c.status] ?? c.status
 
-  const AGENT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support']
+  const AGENT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support', 'whatsapp-secretary']
   const isAgent = AGENT_SOL_IDS.includes(c.solution_id)
 
   const schedDays = [
@@ -948,7 +962,7 @@ function renderProduct(contractId) {
         <div id="agent-online-${contractId}" style="font-size:15px">Carregando...</div>
       </div>
     </div>
-    ${c.solution_id === 'whatsapp-agent' ? `
+    ${['whatsapp-agent', 'whatsapp-secretary'].includes(c.solution_id) ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
       <p style="font-size:12px;color:#64748b;margin-bottom:14px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
@@ -1398,7 +1412,7 @@ async function confirmContract() {
 }
 
 // ── CHATBOT (por contrato) ─────────────────────────────────────────────
-const CHATBOT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support']
+const CHATBOT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support', 'whatsapp-secretary']
 
 async function loadChatbotProductData(contractId) {
   if (!company) return
