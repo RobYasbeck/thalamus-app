@@ -618,11 +618,11 @@ const SOLUTIONS = [
   },
   {
     id: 'whatsapp-agent',
-    name: 'Agente de IA — WhatsApp',
+    name: 'Agente de IA — Agendamento WhatsApp',
     icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
     icon_class: 'img-purple',
-    tagline: 'Atendimento 24/7 com inteligência artificial',
-    description: 'Um agente treinado com o conhecimento da sua empresa atende seus clientes no WhatsApp a qualquer hora. Responde dúvidas, qualifica leads e encaminha para humanos quando necessário.',
+    tagline: 'Agendamentos automáticos 24/7 com inteligência artificial',
+    description: 'Um agente treinado com o conhecimento da sua empresa recebe seus clientes no WhatsApp, tira dúvidas e realiza agendamentos automaticamente — respeitando sua agenda e disponibilidade.',
     steps: [
       'Configuração e treinamento do agente',
       'Integração com número WhatsApp da empresa',
@@ -631,32 +631,32 @@ const SOLUTIONS = [
     pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
   },
   {
-    id: 'whatsapp-chatbot',
-    name: 'Chatbot — WhatsApp',
-    icon: '<img src="chatbot.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
-    icon_class: 'img-gray',
-    tagline: 'Fluxo de atendimento automático no WhatsApp',
-    description: 'Um chatbot de atendimento com fluxo desenhado pela nossa equipe para tratar, atender e direcionar corretamente seus clientes entre seus canais de atendimento.',
+    id: 'whatsapp-sdr',
+    name: 'Agente de IA — SDR (Vendas)',
+    icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
+    icon_class: 'img-purple',
+    tagline: 'Qualificação de leads com inteligência artificial',
+    description: 'Um agente especializado em prospecção e qualificação de leads atende potenciais clientes no WhatsApp, identifica oportunidades e encaminha os leads qualificados para o seu time de vendas.',
     steps: [
-      'Configuração e desenho do fluxo de atendimento',
+      'Configuração e treinamento do agente de vendas',
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
-    pricing: { monthly: 299, setup: 400, note: 'Contatos ilimitados', impl: 'Implantação em até 3 dias' }
+    pricing: { monthly: 499, setup: 200, note: 'Até 500 leads/mês', impl: 'Implantação em até 5 dias' }
   },
   {
-    id: 'instagram-agent',
-    name: 'Chatbot — Instagram',
-    icon: '<img src="chatbot.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
-    icon_class: 'img-gray',
-    tagline: 'Atendimento automático no Instagram 24/7',
-    description: 'Um chatbot de atendimento com fluxo desenhado pela nossa equipe para tratar, atender e direcionar corretamente seus clientes entre seus canais de atendimento.',
+    id: 'whatsapp-support',
+    name: 'Agente de IA — Suporte',
+    icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
+    icon_class: 'img-purple',
+    tagline: 'Suporte técnico 24/7 com inteligência artificial',
+    description: 'Um agente treinado com os fluxos e base de conhecimento da sua empresa resolve dúvidas, abre chamados e oferece suporte técnico para seus clientes a qualquer hora do dia.',
     steps: [
-      'Configuração e treinamento do agente',
-      'Integração com o perfil Instagram da empresa',
+      'Configuração e treinamento do agente de suporte',
+      'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
-    pricing: { monthly: 299, setup: 400, tiers: [{ contacts: 500, price: 299 }, { contacts: 2000, price: 399 }, { contacts: 5000, price: 599 }], impl: 'Implantação em até 3 dias' }
+    pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
   }
 ]
 
@@ -865,7 +865,8 @@ function renderProduct(contractId) {
   const statusSt   = { contratado:'badge-contracted', em_configuracao:'badge-contracted', em_implantacao:'badge-contracted', ativo:'badge-active' }[c.status] ?? 'badge-contracted'
   const statusLbl  = { contratado:'Contratado', em_configuracao:'Em configuração', em_implantacao:'Em implantação', ativo:'Ativo' }[c.status] ?? c.status
 
-  const isAgent = c.solution_id === 'whatsapp-agent'
+  const AGENT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support']
+  const isAgent = AGENT_SOL_IDS.includes(c.solution_id)
 
   const schedDays = [
     ['monday',    'Segunda-feira'],
@@ -947,6 +948,7 @@ function renderProduct(contractId) {
         <div id="agent-online-${contractId}" style="font-size:15px">Carregando...</div>
       </div>
     </div>
+    ${c.solution_id === 'whatsapp-agent' ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
       <p style="font-size:12px;color:#64748b;margin-bottom:14px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
@@ -967,7 +969,7 @@ function renderProduct(contractId) {
         style="margin-top:16px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Rajdhani',sans-serif">
         Salvar disponibilidade
       </button>
-    </div>`}
+    </div>` : ''}`}
 
     ${CHATBOT_SOL_IDS.includes(c.solution_id) ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
@@ -1396,7 +1398,7 @@ async function confirmContract() {
 }
 
 // ── CHATBOT (por contrato) ─────────────────────────────────────────────
-const CHATBOT_SOL_IDS = ['whatsapp-agent', 'whatsapp-chatbot']
+const CHATBOT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support']
 
 async function loadChatbotProductData(contractId) {
   if (!company) return
