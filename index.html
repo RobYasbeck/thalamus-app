@@ -433,6 +433,8 @@
         <button class="nav-item" id="nav-billing" onclick="go('billing')">
           <span class="nav-icon">💳</span> Faturamento
         </button>
+        <div class="nav-section" id="nav-section-produtos" style="display:none">Meus Produtos</div>
+        <div id="nav-produtos-list"></div>
       </nav>
       <div class="sidebar-footer">
         <div class="company-name" id="company-name-tag"></div>
@@ -514,6 +516,11 @@
         <!-- previsão 3 meses -->
         <div class="billing-block-title" style="margin-top:28px;margin-bottom:16px">Previsão de Faturamento — Próximos 3 Meses</div>
         <div id="billing-forecast"></div>
+      </section>
+
+      <!-- PRODUCT DETAIL -->
+      <section id="sec-product">
+        <div id="product-detail-content"></div>
       </section>
 
       <!-- MY SOLUTIONS -->
@@ -718,6 +725,7 @@ async function loadContracts() {
   if (!company) return
   const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
   myContracts = data || []
+  renderProductNav()
 }
 
 function subscribeToContracts() {
@@ -738,6 +746,7 @@ function subscribeToContracts() {
       if (sec === 'catalog')      renderCatalog()
       if (sec === 'my-solutions') renderMySolutions()
       if (sec === 'billing')      renderBilling()
+      if (sec === 'product')      renderProduct(activeProductId)
     })
     .subscribe()
 }
@@ -759,6 +768,124 @@ async function go(sec) {
   if (sec === 'catalog')      renderCatalog()
   if (sec === 'my-solutions') renderMySolutions()
   if (sec === 'billing')      renderBilling()
+}
+
+let activeProductId = null
+
+function productLabel(contractId) {
+  const c   = myContracts.find(x => x.id === contractId)
+  if (!c) return 'Produto'
+  const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+  if (!sol) return 'Produto'
+  const sameType = myContracts.filter(x => x.solution_id === c.solution_id)
+  if (sameType.length === 1) return sol.name
+  return sol.name + ' ' + (sameType.findIndex(x => x.id === contractId) + 1)
+}
+
+function renderProductNav() {
+  const section = document.getElementById('nav-section-produtos')
+  const list    = document.getElementById('nav-produtos-list')
+  if (!myContracts.length) {
+    section.style.display = 'none'
+    list.innerHTML = ''
+    return
+  }
+  section.style.display = ''
+  list.innerHTML = myContracts.map(c => {
+    const sol   = SOLUTIONS.find(s => s.id === c.solution_id)
+    const label = productLabel(c.id)
+    const icon  = sol ? (sol.icon_class.includes('img') ? '📦' : sol.icon) : '📦'
+    const isActive = c.id === activeProductId
+    return `<button class="nav-item ${isActive ? 'active' : ''}" id="nav-product-${c.id}"
+      onclick="goProduct('${c.id}')" style="font-size:13px;padding:7px 10px">
+      <span class="nav-icon" style="font-size:13px">${icon}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</span>
+    </button>`
+  }).join('')
+}
+
+async function goProduct(contractId) {
+  activeProductId = contractId
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+  const btn = document.getElementById('nav-product-' + contractId)
+  if (btn) btn.classList.add('active')
+  document.querySelectorAll('main > section').forEach(s => s.classList.remove('active'))
+  document.getElementById('sec-product').classList.add('active')
+  await loadContracts()
+  renderProduct(contractId)
+}
+
+function renderProduct(contractId) {
+  const el = document.getElementById('product-detail-content')
+  if (!contractId) { el.innerHTML = ''; return }
+  const c   = myContracts.find(x => x.id === contractId)
+  if (!c) { el.innerHTML = ''; return }
+  const sol = SOLUTIONS.find(s => s.id === c.solution_id)
+  if (!sol) { el.innerHTML = ''; return }
+
+  const label     = productLabel(contractId)
+  const statusIdx = STATUS_ORDER[c.status] ?? 0
+  const isFinal   = statusIdx === TIMELINE_STEPS.length - 1
+  const stepDates = {
+    contratado:      c.contracted_at,
+    em_configuracao: c.configuracao_at,
+    em_implantacao:  c.implantacao_at,
+    ativo:           c.ativo_at,
+  }
+  const timelineHtml = TIMELINE_STEPS.map((step, i) => {
+    let cls = '', icon = '○'
+    if (i < statusIdx)                   { cls = 'done';    icon = '✓' }
+    else if (i === statusIdx && isFinal) { cls = 'final';   icon = '✓' }
+    else if (i === statusIdx)            { cls = 'current'; icon = '◎' }
+    const tsRaw  = (cls === 'done' || cls === 'final') && stepDates[step.key]
+    const dateEl = tsRaw ? `<div class="tl-date">${new Date(tsRaw).toLocaleDateString('pt-BR')}</div>` : ''
+    return `<div class="timeline-step ${cls}">
+      <div class="tl-dot">${icon}</div>
+      <div class="tl-label">${step.label}</div>
+      ${dateEl}
+    </div>`
+  }).join('')
+
+  const monthly  = sol.pricing.monthly + (c.extra_monthly ?? 0)
+  const contracted = c.contracted_at ? new Date(c.contracted_at).toLocaleDateString('pt-BR') : '—'
+  const billingDay = c.billing_day ? 'Todo dia ' + c.billing_day : '—'
+  const statusSt   = { contratado:'badge-contracted', em_configuracao:'badge-contracted', em_implantacao:'badge-contracted', ativo:'badge-active' }[c.status] ?? 'badge-contracted'
+  const statusLbl  = { contratado:'Contratado', em_configuracao:'Em configuração', em_implantacao:'Em implantação', ativo:'Ativo' }[c.status] ?? c.status
+
+  el.innerHTML = `
+    <div class="page-header" style="display:flex;align-items:center;gap:14px">
+      <div class="sol-icon ${sol.icon_class}" style="width:48px;height:48px;flex-shrink:0;font-size:22px;display:flex;align-items:center;justify-content:center;border-radius:12px">${sol.icon}</div>
+      <div>
+        <div class="page-title">${label}</div>
+        <div class="page-sub">${sol.tagline}</div>
+      </div>
+      <span class="badge ${statusSt}" style="margin-left:auto">${statusLbl}</span>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Implantação</div>
+      <div class="timeline">${timelineHtml}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:#64748b;margin-bottom:4px">Mensalidade</div>
+        <div style="font-size:20px;font-weight:700;color:#e2e8f0">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
+        ${c.extra_monthly > 0 ? `<div style="font-size:11px;color:#64748b;margin-top:2px">base + R$ ${Number(c.extra_monthly).toLocaleString('pt-BR')} adicional</div>` : ''}
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:#64748b;margin-bottom:4px">Implantação</div>
+        <div style="font-size:20px;font-weight:700;color:${c.charge_setup === false ? 'var(--green)' : '#e2e8f0'}">${c.charge_setup === false ? 'Isento' : 'R$ ' + sol.pricing.setup.toLocaleString('pt-BR')}</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:#64748b;margin-bottom:4px">Contratado em</div>
+        <div style="font-size:18px;font-weight:700;color:#e2e8f0">${contracted}</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:#64748b;margin-bottom:4px">Vencimento</div>
+        <div style="font-size:18px;font-weight:700;color:#e2e8f0">${billingDay}</div>
+      </div>
+    </div>`
 }
 
 function renderDashboard() {
