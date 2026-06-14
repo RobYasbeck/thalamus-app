@@ -163,6 +163,9 @@
     .nav-item.active { background: rgba(124,58,237,.2); color: #a78bfa; }
     .nav-icon { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .nav-marker { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; flex-shrink: 0; }
+    .nav-marker-sm { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .4; flex-shrink: 0; }
+    .nav-item.active .nav-marker-sm { opacity: .9; }
+    .nav-item:hover .nav-marker-sm { opacity: .7; }
     .nav-item.active .nav-marker { opacity: 1; }
     .nav-item:hover .nav-marker { opacity: .8; }
     .nav-sol-icon { width: 20px; height: 20px; border-radius: 6px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
@@ -803,7 +806,7 @@ function renderProductNav() {
   list.innerHTML = myContracts.map(c => {
     const sol   = SOLUTIONS.find(s => s.id === c.solution_id)
     const label = productLabel(c.id)
-    const iconHtml = '<span class="nav-icon"><span class="nav-marker"></span></span>'
+    const iconHtml = '<span class="nav-icon"><span class="nav-marker-sm"></span></span>'
     const isActive = c.id === activeProductId
     return `<button class="nav-item ${isActive ? 'active' : ''}" id="nav-product-${c.id}"
       onclick="goProduct('${c.id}')" style="font-size:13px;padding:7px 10px">
