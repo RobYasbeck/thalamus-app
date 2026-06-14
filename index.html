@@ -336,7 +336,7 @@
     .modal-close:hover { color: var(--text); }
     .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
     .modal-sol-preview { background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
-    .modal-sol-icon { font-size: 28px; }
+    .modal-sol-icon { font-size: 28px; width: 48px; height: 48px; flex-shrink: 0; }
     .modal-sol-name { font-size: 15px; font-weight: 700; color: #fff; }
     .modal-sol-tagline { font-size: 12px; color: var(--muted); }
     .modal-info { font-size: 13px; color: var(--muted); line-height: 1.6; }
@@ -1127,7 +1127,9 @@ function openContractModal(solutionId) {
   const sol = SOLUTIONS.find(s => s.id === solutionId)
   if (!sol) return
   pendingContractId = solutionId
-  document.getElementById('modal-sol-icon').textContent    = sol.icon
+  const iconEl = document.getElementById('modal-sol-icon')
+  iconEl.className = 'modal-sol-icon sol-icon ' + sol.icon_class
+  iconEl.innerHTML = sol.icon
   document.getElementById('modal-sol-name').textContent    = sol.name
   document.getElementById('modal-sol-tagline').textContent = sol.tagline
   document.getElementById('modal-contract').classList.add('open')
