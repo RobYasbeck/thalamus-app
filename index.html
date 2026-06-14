@@ -1138,17 +1138,17 @@ function openContractModal(solutionId) {
 async function confirmContract() {
   if (!pendingContractId || !company) return
   const btn = document.getElementById('btn-confirm-contract')
-  btn.disabled = true; btn.textContent = 'Processando...'
-  const { error } = await sb.from('company_solutions').insert({
-    company_id:    company.id,
-    solution_id:   pendingContractId,
-    status:        'contratado',
-    contracted_at: new Date().toISOString()
+  btn.disabled = true; btn.textContent = 'Enviando solicitação...'
+  const { error } = await sb.from('contract_requests').insert({
+    company_id:   company.id,
+    solution_id:  pendingContractId,
+    status:       'pendente',
+    requested_at: new Date().toISOString()
   })
   btn.disabled = false; btn.textContent = 'Confirmar contratação'
   closeModal('modal-contract')
-  if (error) { toast('Erro ao processar. Tente novamente.', 'error'); return }
-  toast('Solução contratada! Nossa equipe entrará em contato em breve.', 'success')
+  if (error) { toast('Erro ao enviar solicitação. Tente novamente.', 'error'); return }
+  toast('Solicitação enviada! Nossa equipe entrará em contato em até 48 horas úteis.', 'success')
   pendingContractId = null
   await loadContracts()
   renderCatalog()
