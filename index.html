@@ -272,6 +272,7 @@
     .timeline-step.done .tl-label    { color: var(--green); }
     .timeline-step.current .tl-label { color: var(--yellow); }
     .timeline-step.final .tl-label   { color: var(--green); }
+    .tl-date  { font-size: 10px; color: var(--muted); text-align: center; margin-top: 2px; opacity: .7; }
     .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-state p { font-size: 14px; margin-bottom: 20px; }
@@ -864,16 +865,25 @@ function renderMySolutions() {
     const isFinal   = statusIdx === TIMELINE_STEPS.length - 1
     const date = new Date(c.contracted_at).toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' })
 
+    const stepDates = {
+      contratado:      c.contracted_at,
+      em_configuracao: c.configuracao_at,
+      em_implantacao:  c.implantacao_at,
+      ativo:           c.ativo_at,
+    }
     const timelineHtml = TIMELINE_STEPS.map((step, i) => {
       let cls  = ''
       let icon = '○'
       if (i < statusIdx)                      { cls = 'done';    icon = '✓' }
       else if (i === statusIdx && isFinal)    { cls = 'final';   icon = '✓' }
       else if (i === statusIdx)               { cls = 'current'; icon = '◎' }
+      const tsRaw  = (cls === 'done' || cls === 'final') && stepDates[step.key]
+      const dateEl = tsRaw ? `<div class="tl-date">${new Date(tsRaw).toLocaleDateString('pt-BR')}</div>` : ''
       return `
         <div class="timeline-step ${cls}">
           <div class="tl-dot">${icon}</div>
           <div class="tl-label">${step.label}</div>
+          ${dateEl}
         </div>`
     }).join('')
 
