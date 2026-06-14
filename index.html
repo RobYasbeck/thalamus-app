@@ -803,7 +803,7 @@ function renderProductNav() {
   list.innerHTML = myContracts.map(c => {
     const sol   = SOLUTIONS.find(s => s.id === c.solution_id)
     const label = productLabel(c.id)
-    const iconHtml = sol ? `<div class="nav-sol-icon ${sol.icon_class}">${sol.icon}</div>` : '<span class="nav-icon"><span class="nav-marker"></span></span>'
+    const iconHtml = '<span class="nav-icon"><span class="nav-marker"></span></span>'
     const isActive = c.id === activeProductId
     return `<button class="nav-item ${isActive ? 'active' : ''}" id="nav-product-${c.id}"
       onclick="goProduct('${c.id}')" style="font-size:13px;padding:7px 10px">
