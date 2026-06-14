@@ -936,6 +936,18 @@ function renderProduct(contractId) {
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
       <p style="font-size:12px;color:#64748b;margin-bottom:14px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #1e293b">
+        <label style="font-size:13px;color:#e2e8f0;flex-shrink:0">Duração de cada atendimento</label>
+        <select id="sched-duration-${contractId}"
+          style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:6px 10px;font-size:13px;font-family:'Rajdhani',sans-serif;cursor:pointer">
+          <option value="30">30 minutos</option>
+          <option value="45">45 minutos</option>
+          <option value="60" selected>1 hora</option>
+          <option value="90">1h 30min</option>
+          <option value="120">2 horas</option>
+          <option value="180">3 horas</option>
+        </select>
+      </div>
       ${schedRows}
       <button onclick="saveScheduleConfig('${contractId}')"
         style="margin-top:16px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Rajdhani',sans-serif">
@@ -1469,6 +1481,8 @@ async function loadAgentData(contractId) {
     if (endEl)   endEl.value   = cfg.end   ?? '18:00'
     toggleSchedDay(day, contractId, cfg.enabled)
   })
+  const durEl = document.getElementById(`sched-duration-${contractId}`)
+  if (durEl && sched.appointment_duration_minutes) durEl.value = String(sched.appointment_duration_minutes)
 }
 
 function toggleSchedDay(day, contractId, enabled) {
@@ -1489,6 +1503,7 @@ async function saveScheduleConfig(contractId) {
       end:     document.getElementById(`sched-end-${day}-${contractId}`)?.value   ?? '18:00',
     }
   })
+  config.appointment_duration_minutes = parseInt(document.getElementById(`sched-duration-${contractId}`)?.value ?? '60', 10)
   const { data: existing } = await sb.from('bot_configs').select('id').eq('company_id', company.id).maybeSingle()
   const { error } = existing
     ? await sb.from('bot_configs').update({ schedule_config: config }).eq('company_id', company.id)
