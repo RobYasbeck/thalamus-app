@@ -656,7 +656,8 @@ const TIMELINE_STEPS = [
 const STATUS_ORDER = { contratado: 0, em_configuracao: 1, em_implantacao: 2, ativo: 3 }
 
 let sb, session, company
-let myContracts = []
+let myContracts  = []
+let myInstances  = {}
 let pendingContractId = null
 let contractChannel = null
 
@@ -724,6 +725,12 @@ async function loadContracts() {
   if (!company) return
   const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
   myContracts = data || []
+  const { data: insts } = await sb.from('whatsapp_instances')
+    .select('instance_name, solution_record_id').eq('company_id', company.id)
+  myInstances = {}
+  for (const i of insts ?? []) {
+    if (i.solution_record_id) myInstances[i.solution_record_id] = i.instance_name
+  }
   renderProductNav()
 }
 
@@ -793,7 +800,7 @@ function renderProductNav() {
   section.style.display = ''
   list.innerHTML = visible.map(c => {
     const sol   = SOLUTIONS.find(s => s.id === c.solution_id)
-    const label = productLabel(c.id)
+    const label = myInstances[c.id] ?? productLabel(c.id)
     const iconHtml = '<span class="nav-icon"><span class="nav-marker-sm"></span></span>'
     const isActive = c.id === activeProductId
     return `<button class="nav-item ${isActive ? 'active' : ''}" id="nav-product-${c.id}"
