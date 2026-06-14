@@ -865,6 +865,34 @@ function renderProduct(contractId) {
   const statusSt   = { contratado:'badge-contracted', em_configuracao:'badge-contracted', em_implantacao:'badge-contracted', ativo:'badge-active' }[c.status] ?? 'badge-contracted'
   const statusLbl  = { contratado:'Contratado', em_configuracao:'Em configuração', em_implantacao:'Em implantação', ativo:'Ativo' }[c.status] ?? c.status
 
+  const isAgent = c.solution_id === 'whatsapp-agent'
+
+  const schedDays = [
+    ['monday',    'Segunda-feira'],
+    ['tuesday',   'Terça-feira'],
+    ['wednesday', 'Quarta-feira'],
+    ['thursday',  'Quinta-feira'],
+    ['friday',    'Sexta-feira'],
+    ['saturday',  'Sábado'],
+    ['sunday',    'Domingo'],
+  ]
+  const schedRows = schedDays.map(([key, lbl]) =>
+    `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1e293b">
+      <input type="checkbox" id="sched-${key}-${contractId}"
+        onchange="toggleSchedDay('${key}','${contractId}',this.checked)"
+        style="width:16px;height:16px;accent-color:#2563eb;cursor:pointer;flex-shrink:0">
+      <label for="sched-${key}-${contractId}"
+        style="width:110px;font-size:13px;color:#e2e8f0;cursor:pointer;flex-shrink:0">${lbl}</label>
+      <div id="sched-times-${key}-${contractId}" style="display:flex;align-items:center;gap:8px">
+        <input type="time" id="sched-start-${key}-${contractId}" value="08:00"
+          style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:5px 8px;font-size:13px;font-family:'Rajdhani',sans-serif">
+        <span style="color:#64748b;font-size:12px">às</span>
+        <input type="time" id="sched-end-${key}-${contractId}" value="18:00"
+          style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:5px 8px;font-size:13px;font-family:'Rajdhani',sans-serif">
+      </div>
+    </div>`
+  ).join('')
+
   el.innerHTML = `
     <div class="page-header" style="display:flex;align-items:center;gap:14px">
       <div class="sol-icon ${sol.icon_class}" style="width:48px;height:48px;flex-shrink:0;font-size:22px;display:flex;align-items:center;justify-content:center;border-radius:12px">${sol.icon}</div>
@@ -875,16 +903,16 @@ function renderProduct(contractId) {
       <span class="badge ${statusSt}" style="margin-left:auto">${statusLbl}</span>
     </div>
 
+    ${!isAgent ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Implantação</div>
       <div class="timeline">${timelineHtml}</div>
     </div>
-
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Mensalidade</div>
         <div style="font-size:20px;font-weight:700;color:#e2e8f0">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
-        ${c.extra_monthly > 0 ? `<div style="font-size:11px;color:#64748b;margin-top:2px">base + R$ ${Number(c.extra_monthly).toLocaleString('pt-BR')} adicional</div>` : ''}
+        ${c.extra_monthly > 0 ? '<div style="font-size:11px;color:#64748b;margin-top:2px">base + R$ ' + Number(c.extra_monthly).toLocaleString('pt-BR') + ' adicional</div>' : ''}
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Implantação</div>
@@ -898,7 +926,22 @@ function renderProduct(contractId) {
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Vencimento</div>
         <div style="font-size:18px;font-weight:700;color:#e2e8f0">${billingDay}</div>
       </div>
+    </div>` : `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Status do Bot</div>
+        <div id="agent-online-${contractId}" style="font-size:15px">Carregando...</div>
+      </div>
     </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:14px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
+      ${schedRows}
+      <button onclick="saveScheduleConfig('${contractId}')"
+        style="margin-top:16px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Rajdhani',sans-serif">
+        Salvar disponibilidade
+      </button>
+    </div>`}
 
     ${CHATBOT_SOL_IDS.includes(c.solution_id) ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
@@ -922,9 +965,8 @@ function renderProduct(contractId) {
     </div>` : ''}
   `
 
-  if (CHATBOT_SOL_IDS.includes(c.solution_id)) {
-    loadChatbotProductData(contractId)
-  }
+  if (isAgent) loadAgentData(contractId)
+  if (CHATBOT_SOL_IDS.includes(c.solution_id)) loadChatbotProductData(contractId)
 }
 
 function renderDashboard() {
@@ -1392,6 +1434,67 @@ function renderChatbotAppointments(appts, el) {
           + '</tr>'
       }).join('')
     + '</tbody></table></div>'
+}
+
+// ── AGENTE DE IA ────────────────────────────────────────────────────
+async function loadAgentData(contractId) {
+  if (!company) return
+  const { data: instances } = await sb.from('whatsapp_instances')
+    .select('status').eq('company_id', company.id).eq('solution_record_id', contractId).limit(1)
+  const statusEl = document.getElementById('agent-online-' + contractId)
+  if (statusEl) {
+    const st = instances?.[0]?.status
+    const dot = enabled => `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${enabled};box-shadow:0 0 8px ${enabled};margin-right:8px"></span>`
+    const map = {
+      connected:    dot('#34d399') + '<span style="color:#34d399;font-weight:700">Bot Online</span>',
+      connecting:   dot('#f59e0b') + '<span style="color:#f59e0b;font-weight:700">Conectando...</span>',
+      disconnected: dot('#f87171') + '<span style="color:#f87171;font-weight:700">Bot Offline</span>',
+    }
+    statusEl.innerHTML = st && map[st]
+      ? map[st]
+      : '<span style="color:#64748b">Nenhuma instância configurada</span>'
+  }
+
+  const { data: bc } = await sb.from('bot_configs').select('schedule_config').eq('company_id', company.id).maybeSingle()
+  const sched = bc?.schedule_config ?? {}
+  const workdays = new Set(['monday','tuesday','wednesday','thursday','friday'])
+  const days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
+  days.forEach(day => {
+    const cfg = sched[day] ?? { enabled: workdays.has(day), start: '08:00', end: day === 'saturday' ? '12:00' : '18:00' }
+    const cbEl    = document.getElementById(`sched-${day}-${contractId}`)
+    const startEl = document.getElementById(`sched-start-${day}-${contractId}`)
+    const endEl   = document.getElementById(`sched-end-${day}-${contractId}`)
+    if (cbEl)    cbEl.checked  = cfg.enabled
+    if (startEl) startEl.value = cfg.start ?? '08:00'
+    if (endEl)   endEl.value   = cfg.end   ?? '18:00'
+    toggleSchedDay(day, contractId, cfg.enabled)
+  })
+}
+
+function toggleSchedDay(day, contractId, enabled) {
+  const wrap = document.getElementById(`sched-times-${day}-${contractId}`)
+  if (!wrap) return
+  wrap.style.opacity = enabled ? '1' : '0.35'
+  wrap.querySelectorAll('input').forEach(inp => { inp.disabled = !enabled })
+}
+
+async function saveScheduleConfig(contractId) {
+  if (!company) return
+  const days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
+  const config = {}
+  days.forEach(day => {
+    config[day] = {
+      enabled: document.getElementById(`sched-${day}-${contractId}`)?.checked ?? false,
+      start:   document.getElementById(`sched-start-${day}-${contractId}`)?.value ?? '08:00',
+      end:     document.getElementById(`sched-end-${day}-${contractId}`)?.value   ?? '18:00',
+    }
+  })
+  const { data: existing } = await sb.from('bot_configs').select('id').eq('company_id', company.id).maybeSingle()
+  const { error } = existing
+    ? await sb.from('bot_configs').update({ schedule_config: config }).eq('company_id', company.id)
+    : await sb.from('bot_configs').insert({ company_id: company.id, schedule_config: config, active: true })
+  if (error) { toast('Erro ao salvar: ' + error.message, 'error'); return }
+  toast('Disponibilidade salva!', 'success')
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open') }
