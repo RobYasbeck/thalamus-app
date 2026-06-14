@@ -445,12 +445,6 @@
         <button class="nav-item" id="nav-billing" onclick="go('billing')">
           <span class="nav-icon"><span class="nav-marker"></span></span> Faturamento
         </button>
-        <div id="nav-chatbot-wrap" style="display:none">
-          <div class="nav-section">Chatbot</div>
-          <button class="nav-item" id="nav-chatbot" onclick="go('chatbot')">
-            <span class="nav-icon"><span class="nav-marker"></span></span> WhatsApp Bot
-          </button>
-        </div>
         <div class="nav-section" id="nav-section-produtos" style="display:none">Meus Produtos</div>
         <div id="nav-produtos-list"></div>
       </nav>
@@ -551,34 +545,6 @@
       </section>
 
       <!-- CHATBOT -->
-      <section id="sec-chatbot">
-        <div class="page-header">
-          <div class="page-title">Chatbot — WhatsApp</div>
-          <div class="page-sub">Conversas, atendimentos e agendamentos via WhatsApp.</div>
-        </div>
-        <div class="stats-row" style="margin-bottom:24px">
-          <div class="stat-card">
-            <div class="stat-label">Conversas</div>
-            <div class="stat-value" id="chatbot-stat-convs">—</div>
-            <div class="stat-sub">total</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Agendamentos</div>
-            <div class="stat-value" id="chatbot-stat-appts">—</div>
-            <div class="stat-sub">total</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Aguardando humano</div>
-            <div class="stat-value" id="chatbot-stat-handoff">—</div>
-            <div class="stat-sub">conversas abertas</div>
-          </div>
-        </div>
-        <div class="section-header">
-          <div class="section-label">Agendamentos</div>
-        </div>
-        <div id="chatbot-appointments-list"></div>
-      </section>
-
     </main>
   </div>
 </div>
@@ -773,13 +739,6 @@ async function loadContracts() {
   const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
   myContracts = data || []
   renderProductNav()
-  updateChatbotNav()
-}
-
-function updateChatbotNav() {
-  const chatbotIds = ['whatsapp-agent', 'whatsapp-chatbot']
-  const has = myContracts.some(c => chatbotIds.includes(c.solution_id))
-  document.getElementById('nav-chatbot-wrap').style.display = has ? '' : 'none'
 }
 
 function subscribeToContracts() {
@@ -822,7 +781,6 @@ async function go(sec) {
   if (sec === 'catalog')      renderCatalog()
   if (sec === 'my-solutions') renderMySolutions()
   if (sec === 'billing')      renderBilling()
-  if (sec === 'chatbot')      loadChatbotData()
 }
 
 let activeProductId = null
@@ -940,7 +898,33 @@ function renderProduct(contractId) {
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Vencimento</div>
         <div style="font-size:18px;font-weight:700;color:#e2e8f0">${billingDay}</div>
       </div>
-    </div>`
+    </div>
+
+    ${CHATBOT_SOL_IDS.includes(c.solution_id) ? `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Monitoramento do Bot</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Conversas</div>
+          <div id="chatbot-convs-${contractId}" style="font-size:24px;font-weight:700;color:#e2e8f0">—</div>
+        </div>
+        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Agendamentos</div>
+          <div id="chatbot-appts-${contractId}" style="font-size:24px;font-weight:700;color:#e2e8f0">—</div>
+        </div>
+        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">Aguard. humano</div>
+          <div id="chatbot-handoff-${contractId}" style="font-size:24px;font-weight:700;color:#f59e0b">—</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Agendamentos</div>
+      <div id="chatbot-appts-list-${contractId}" style="color:#64748b;font-size:13px">Carregando...</div>
+    </div>` : ''}
+  `
+
+  if (CHATBOT_SOL_IDS.includes(c.solution_id)) {
+    loadChatbotProductData(contractId)
+  }
 }
 
 function renderDashboard() {
@@ -1343,24 +1327,48 @@ async function confirmContract() {
   renderCatalog()
 }
 
-// ── CHATBOT ──────────────────────────────────────────────────────────
-async function loadChatbotData() {
+// ── CHATBOT (por contrato) ─────────────────────────────────────────────
+const CHATBOT_SOL_IDS = ['whatsapp-agent', 'whatsapp-chatbot']
+
+async function loadChatbotProductData(contractId) {
   if (!company) return
   const cid = company.id
-  const [convsRes, apptsRes, handoffRes, apptsListRes] = await Promise.all([
-    sb.from('conversations').select('id', { count: 'exact', head: true }).eq('company_id', cid),
-    sb.from('appointments').select('id', { count: 'exact', head: true }).eq('company_id', cid),
-    sb.from('conversations').select('id', { count: 'exact', head: true }).eq('company_id', cid).eq('human_handoff', true).eq('status', 'open'),
-    sb.from('appointments').select('*').eq('company_id', cid).order('scheduled_at', { ascending: false }).limit(50),
+  const statEl    = id => document.getElementById(id + '-' + contractId)
+  const apptsList = document.getElementById('chatbot-appts-list-' + contractId)
+
+  // Busca instâncias vinculadas a este contrato para filtrar conversas
+  const { data: instances } = await sb.from('whatsapp_instances')
+    .select('id').eq('company_id', cid).eq('solution_record_id', contractId)
+  const instIds = (instances ?? []).map(i => i.id)
+
+  const [convsRes, handoffRes] = await Promise.all([
+    instIds.length
+      ? sb.from('conversations').select('id', { count: 'exact', head: true }).in('instance_id', instIds)
+      : Promise.resolve({ count: 0 }),
+    instIds.length
+      ? sb.from('conversations').select('id', { count: 'exact', head: true }).in('instance_id', instIds).eq('human_handoff', true).eq('status', 'open')
+      : Promise.resolve({ count: 0 }),
   ])
-  document.getElementById('chatbot-stat-convs').textContent   = convsRes.count   ?? 0
-  document.getElementById('chatbot-stat-appts').textContent   = apptsRes.count   ?? 0
-  document.getElementById('chatbot-stat-handoff').textContent = handoffRes.count ?? 0
-  renderChatbotAppointments(apptsListRes.data ?? [])
+
+  let apptsData = []
+  if (instIds.length) {
+    const { data: convIds } = await sb.from('conversations').select('id').in('instance_id', instIds)
+    if (convIds?.length) {
+      const { data } = await sb.from('appointments')
+        .select('*').in('conversation_id', convIds.map(x => x.id))
+        .order('scheduled_at', { ascending: false }).limit(50)
+      apptsData = data ?? []
+    }
+  }
+
+  if (statEl('chatbot-convs'))    statEl('chatbot-convs').textContent    = convsRes.count   ?? 0
+  if (statEl('chatbot-handoff'))  statEl('chatbot-handoff').textContent  = handoffRes.count ?? 0
+  if (statEl('chatbot-appts'))    statEl('chatbot-appts').textContent    = apptsData.length
+
+  if (apptsList) renderChatbotAppointments(apptsData, apptsList)
 }
 
-function renderChatbotAppointments(appts) {
-  const el = document.getElementById('chatbot-appointments-list')
+function renderChatbotAppointments(appts, el) {
   if (!appts.length) {
     el.innerHTML = '<p style="color:#64748b;font-size:13px;padding:16px 0">Nenhum agendamento ainda.</p>'
     return
