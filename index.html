@@ -876,19 +876,33 @@ function renderProduct(contractId) {
     ['saturday',  'Sábado'],
     ['sunday',    'Domingo'],
   ]
+  const timeInput = (id, val) =>
+    `<input type="time" id="${id}" value="${val}"
+      style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:5px 8px;font-size:13px;font-family:'Rajdhani',sans-serif;width:92px">`
+
   const schedRows = schedDays.map(([key, lbl]) =>
-    `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1e293b">
+    `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1e293b;flex-wrap:wrap">
       <input type="checkbox" id="sched-${key}-${contractId}"
         onchange="toggleSchedDay('${key}','${contractId}',this.checked)"
         style="width:16px;height:16px;accent-color:#2563eb;cursor:pointer;flex-shrink:0">
       <label for="sched-${key}-${contractId}"
-        style="width:110px;font-size:13px;color:#e2e8f0;cursor:pointer;flex-shrink:0">${lbl}</label>
-      <div id="sched-times-${key}-${contractId}" style="display:flex;align-items:center;gap:8px">
-        <input type="time" id="sched-start-${key}-${contractId}" value="08:00"
-          style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:5px 8px;font-size:13px;font-family:'Rajdhani',sans-serif">
+        style="width:106px;font-size:13px;color:#e2e8f0;cursor:pointer;flex-shrink:0">${lbl}</label>
+      <div id="sched-times-${key}-${contractId}" style="display:flex;align-items:center;gap:6px">
+        ${timeInput(`sched-start-${key}-${contractId}`, '08:00')}
         <span style="color:#64748b;font-size:12px">às</span>
-        <input type="time" id="sched-end-${key}-${contractId}" value="18:00"
-          style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:5px 8px;font-size:13px;font-family:'Rajdhani',sans-serif">
+        ${timeInput(`sched-end-${key}-${contractId}`, '18:00')}
+      </div>
+      <div id="sched-lunch-wrap-${key}-${contractId}" style="display:flex;align-items:center;gap:6px;padding-left:10px;border-left:1px solid #1e293b;flex-shrink:0">
+        <input type="checkbox" id="sched-lunch-${key}-${contractId}"
+          onchange="toggleLunchBlock('${key}','${contractId}',this.checked)"
+          style="width:14px;height:14px;accent-color:#f59e0b;cursor:pointer;flex-shrink:0">
+        <label for="sched-lunch-${key}-${contractId}"
+          style="font-size:12px;color:#94a3b8;cursor:pointer;flex-shrink:0;white-space:nowrap">🍽 Almoço</label>
+        <div id="sched-lunch-times-${key}-${contractId}" style="display:flex;align-items:center;gap:6px;opacity:0.35">
+          ${timeInput(`sched-lunch-start-${key}-${contractId}`, '12:00')}
+          <span style="color:#64748b;font-size:12px">às</span>
+          ${timeInput(`sched-lunch-end-${key}-${contractId}`, '13:00')}
+        </div>
       </div>
     </div>`
   ).join('')
@@ -1479,6 +1493,12 @@ async function loadAgentData(contractId) {
     if (cbEl)    cbEl.checked  = cfg.enabled
     if (startEl) startEl.value = cfg.start ?? '08:00'
     if (endEl)   endEl.value   = cfg.end   ?? '18:00'
+    const lunchCbEl    = document.getElementById(`sched-lunch-${day}-${contractId}`)
+    const lunchStartEl = document.getElementById(`sched-lunch-start-${day}-${contractId}`)
+    const lunchEndEl   = document.getElementById(`sched-lunch-end-${day}-${contractId}`)
+    if (lunchCbEl)    lunchCbEl.checked  = cfg.lunch_block  ?? false
+    if (lunchStartEl) lunchStartEl.value = cfg.lunch_start  ?? '12:00'
+    if (lunchEndEl)   lunchEndEl.value   = cfg.lunch_end    ?? '13:00'
     toggleSchedDay(day, contractId, cfg.enabled)
   })
   const durEl = document.getElementById(`sched-duration-${contractId}`)
@@ -1486,7 +1506,25 @@ async function loadAgentData(contractId) {
 }
 
 function toggleSchedDay(day, contractId, enabled) {
-  const wrap = document.getElementById(`sched-times-${day}-${contractId}`)
+  const timesWrap = document.getElementById(`sched-times-${day}-${contractId}`)
+  if (timesWrap) {
+    timesWrap.style.opacity = enabled ? '1' : '0.35'
+    timesWrap.querySelectorAll('input').forEach(inp => { inp.disabled = !enabled })
+  }
+  const lunchWrap = document.getElementById(`sched-lunch-wrap-${day}-${contractId}`)
+  if (lunchWrap) lunchWrap.style.opacity = enabled ? '1' : '0.35'
+  const lunchCb = document.getElementById(`sched-lunch-${day}-${contractId}`)
+  if (lunchCb) lunchCb.disabled = !enabled
+  if (enabled) {
+    toggleLunchBlock(day, contractId, lunchCb?.checked ?? false)
+  } else {
+    const lunchTimes = document.getElementById(`sched-lunch-times-${day}-${contractId}`)
+    if (lunchTimes) lunchTimes.querySelectorAll('input').forEach(inp => { inp.disabled = true })
+  }
+}
+
+function toggleLunchBlock(day, contractId, enabled) {
+  const wrap = document.getElementById(`sched-lunch-times-${day}-${contractId}`)
   if (!wrap) return
   wrap.style.opacity = enabled ? '1' : '0.35'
   wrap.querySelectorAll('input').forEach(inp => { inp.disabled = !enabled })
@@ -1498,9 +1536,12 @@ async function saveScheduleConfig(contractId) {
   const config = {}
   days.forEach(day => {
     config[day] = {
-      enabled: document.getElementById(`sched-${day}-${contractId}`)?.checked ?? false,
-      start:   document.getElementById(`sched-start-${day}-${contractId}`)?.value ?? '08:00',
-      end:     document.getElementById(`sched-end-${day}-${contractId}`)?.value   ?? '18:00',
+      enabled:     document.getElementById(`sched-${day}-${contractId}`)?.checked            ?? false,
+      start:       document.getElementById(`sched-start-${day}-${contractId}`)?.value        ?? '08:00',
+      end:         document.getElementById(`sched-end-${day}-${contractId}`)?.value          ?? '18:00',
+      lunch_block: document.getElementById(`sched-lunch-${day}-${contractId}`)?.checked      ?? false,
+      lunch_start: document.getElementById(`sched-lunch-start-${day}-${contractId}`)?.value  ?? '12:00',
+      lunch_end:   document.getElementById(`sched-lunch-end-${day}-${contractId}`)?.value    ?? '13:00',
     }
   })
   config.appointment_duration_minutes = parseInt(document.getElementById(`sched-duration-${contractId}`)?.value ?? '60', 10)
