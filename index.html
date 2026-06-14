@@ -782,15 +782,16 @@ function productLabel(contractId) {
 }
 
 function renderProductNav() {
-  const section = document.getElementById('nav-section-produtos')
-  const list    = document.getElementById('nav-produtos-list')
-  if (!myContracts.length) {
+  const section   = document.getElementById('nav-section-produtos')
+  const list      = document.getElementById('nav-produtos-list')
+  const visible   = myContracts.filter(c => c.status !== 'contratado')
+  if (!visible.length) {
     section.style.display = 'none'
     list.innerHTML = ''
     return
   }
   section.style.display = ''
-  list.innerHTML = myContracts.map(c => {
+  list.innerHTML = visible.map(c => {
     const sol   = SOLUTIONS.find(s => s.id === c.solution_id)
     const label = productLabel(c.id)
     const iconHtml = '<span class="nav-icon"><span class="nav-marker-sm"></span></span>'
