@@ -768,24 +768,11 @@ function renderDashboard() {
   document.getElementById('stat-contracted').textContent = total
   document.getElementById('stat-active').textContent     = active
   document.getElementById('stat-pending').textContent    = pending
-  const availablePreview = SOLUTIONS.filter(s => !myContracts.find(c => c.solution_id === s.id))
-  document.getElementById('dash-solutions-preview').innerHTML = availablePreview.length
-    ? availablePreview.map(s => buildSolCard(s, true)).join('')
-    : '<p style="color:var(--muted);font-size:13px;padding:8px 0">Todas as soluções disponíveis já foram contratadas.</p>'
+  document.getElementById('dash-solutions-preview').innerHTML = SOLUTIONS.map(s => buildSolCard(s, true)).join('')
 }
 
 function renderCatalog() {
-  const available = SOLUTIONS.filter(s => !myContracts.find(c => c.solution_id === s.id))
-  if (!available.length) {
-    document.getElementById('catalog-grid').innerHTML = `
-      <div class="empty-state" style="grid-column:1/-1">
-        <div class="empty-icon">🎉</div>
-        <p>Você já contratou todas as nossas soluções disponíveis!</p>
-        <button class="btn btn-primary" onclick="go('my-solutions')">Ver minhas soluções</button>
-      </div>`
-    return
-  }
-  document.getElementById('catalog-grid').innerHTML = available.map(s => buildSolCard(s, false)).join('')
+  document.getElementById('catalog-grid').innerHTML = SOLUTIONS.map(s => buildSolCard(s, false)).join('')
 }
 
 function buildSolCard(s, compact) {
@@ -796,7 +783,7 @@ function buildSolCard(s, compact) {
     badgeHtml = contract.status === 'ativo'
       ? '<span class="badge badge-active">✓ Ativo</span>'
       : '<span class="badge badge-contracted">⟳ Em implantação</span>'
-    footerBtn = `<button class="btn btn-sm btn-secondary" onclick="go('my-solutions')">Ver status</button>`
+    footerBtn = `<button class="btn btn-sm btn-primary" onclick="openContractModal('${s.id}')">Contratar mais um</button>`
   } else {
     badgeHtml = '<span class="badge badge-available">Disponível</span>'
     footerBtn = `<button class="btn btn-sm btn-primary" onclick="openContractModal('${s.id}')">Contratar</button>`
