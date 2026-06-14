@@ -445,6 +445,12 @@
         <button class="nav-item" id="nav-billing" onclick="go('billing')">
           <span class="nav-icon"><span class="nav-marker"></span></span> Faturamento
         </button>
+        <div id="nav-chatbot-wrap" style="display:none">
+          <div class="nav-section">Chatbot</div>
+          <button class="nav-item" id="nav-chatbot" onclick="go('chatbot')">
+            <span class="nav-icon"><span class="nav-marker"></span></span> WhatsApp Bot
+          </button>
+        </div>
         <div class="nav-section" id="nav-section-produtos" style="display:none">Meus Produtos</div>
         <div id="nav-produtos-list"></div>
       </nav>
@@ -542,6 +548,35 @@
           <div class="page-sub">Acompanhe o status e a implantação das suas soluções contratadas.</div>
         </div>
         <div id="my-solutions-list" class="my-solutions-list"></div>
+      </section>
+
+      <!-- CHATBOT -->
+      <section id="sec-chatbot">
+        <div class="page-header">
+          <div class="page-title">Chatbot — WhatsApp</div>
+          <div class="page-sub">Conversas, atendimentos e agendamentos via WhatsApp.</div>
+        </div>
+        <div class="stats-row" style="margin-bottom:24px">
+          <div class="stat-card">
+            <div class="stat-label">Conversas</div>
+            <div class="stat-value" id="chatbot-stat-convs">—</div>
+            <div class="stat-sub">total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Agendamentos</div>
+            <div class="stat-value" id="chatbot-stat-appts">—</div>
+            <div class="stat-sub">total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Aguardando humano</div>
+            <div class="stat-value" id="chatbot-stat-handoff">—</div>
+            <div class="stat-sub">conversas abertas</div>
+          </div>
+        </div>
+        <div class="section-header">
+          <div class="section-label">Agendamentos</div>
+        </div>
+        <div id="chatbot-appointments-list"></div>
       </section>
 
     </main>
@@ -738,6 +773,13 @@ async function loadContracts() {
   const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
   myContracts = data || []
   renderProductNav()
+  updateChatbotNav()
+}
+
+function updateChatbotNav() {
+  const chatbotIds = ['whatsapp-agent', 'whatsapp-chatbot']
+  const has = myContracts.some(c => chatbotIds.includes(c.solution_id))
+  document.getElementById('nav-chatbot-wrap').style.display = has ? '' : 'none'
 }
 
 function subscribeToContracts() {
@@ -780,6 +822,7 @@ async function go(sec) {
   if (sec === 'catalog')      renderCatalog()
   if (sec === 'my-solutions') renderMySolutions()
   if (sec === 'billing')      renderBilling()
+  if (sec === 'chatbot')      loadChatbotData()
 }
 
 let activeProductId = null
@@ -1298,6 +1341,49 @@ async function confirmContract() {
   pendingContractId = null
   await loadContracts()
   renderCatalog()
+}
+
+// ── CHATBOT ──────────────────────────────────────────────────────────
+async function loadChatbotData() {
+  if (!company) return
+  const cid = company.id
+  const [convsRes, apptsRes, handoffRes, apptsListRes] = await Promise.all([
+    sb.from('conversations').select('id', { count: 'exact', head: true }).eq('company_id', cid),
+    sb.from('appointments').select('id', { count: 'exact', head: true }).eq('company_id', cid),
+    sb.from('conversations').select('id', { count: 'exact', head: true }).eq('company_id', cid).eq('human_handoff', true).eq('status', 'open'),
+    sb.from('appointments').select('*').eq('company_id', cid).order('scheduled_at', { ascending: false }).limit(50),
+  ])
+  document.getElementById('chatbot-stat-convs').textContent   = convsRes.count   ?? 0
+  document.getElementById('chatbot-stat-appts').textContent   = apptsRes.count   ?? 0
+  document.getElementById('chatbot-stat-handoff').textContent = handoffRes.count ?? 0
+  renderChatbotAppointments(apptsListRes.data ?? [])
+}
+
+function renderChatbotAppointments(appts) {
+  const el = document.getElementById('chatbot-appointments-list')
+  if (!appts.length) {
+    el.innerHTML = '<p style="color:#64748b;font-size:13px;padding:16px 0">Nenhum agendamento ainda.</p>'
+    return
+  }
+  const stColors = { pending: '#f59e0b', confirmed: '#34d399', cancelled: '#f87171' }
+  const stLabels = { pending: 'Pendente', confirmed: 'Confirmado', cancelled: 'Cancelado' }
+  el.innerHTML = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">'
+    + '<thead><tr style="color:#64748b;text-align:left;border-bottom:1px solid #1e293b">'
+    + '<th style="padding:8px 12px">Data/Hora</th><th style="padding:8px 12px">Cliente</th>'
+    + '<th style="padding:8px 12px">Serviço</th><th style="padding:8px 12px">Status</th>'
+    + '</tr></thead><tbody>'
+    + appts.map(a => {
+        const dt = new Date(a.scheduled_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+        const color = stColors[a.status] ?? '#94a3b8'
+        const label = stLabels[a.status] ?? a.status
+        return '<tr style="border-bottom:1px solid #0f172a">'
+          + `<td style="padding:10px 12px;color:#e2e8f0;white-space:nowrap">${dt}</td>`
+          + `<td style="padding:10px 12px;color:#e2e8f0">${a.customer_name ?? a.customer_phone}</td>`
+          + `<td style="padding:10px 12px;color:#94a3b8">${a.service}</td>`
+          + `<td style="padding:10px 12px"><span style="color:${color};font-size:12px;font-weight:600">${label}</span></td>`
+          + '</tr>'
+      }).join('')
+    + '</tbody></table></div>'
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open') }
