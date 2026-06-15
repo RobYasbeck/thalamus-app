@@ -1477,7 +1477,7 @@ async function loadAgentData(contractId) {
       : '<span style="color:#64748b">Nenhuma instância configurada</span>'
   }
 
-  const { data: bc } = await sb.from('bot_configs').select('schedule_config').eq('company_id', company.id).maybeSingle()
+  const { data: bc } = await sb.from('bot_configs').select('schedule_config').eq('company_id', company.id).eq('solution_record_id', contractId).maybeSingle()
   const sched = bc?.schedule_config ?? {}
   const workdays = new Set(['monday','tuesday','wednesday','thursday','friday'])
   const days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
@@ -1541,10 +1541,10 @@ async function saveScheduleConfig(contractId) {
     }
   })
   config.appointment_duration_minutes = parseInt(document.getElementById(`sched-duration-${contractId}`)?.value ?? '60', 10)
-  const { data: existing } = await sb.from('bot_configs').select('id').eq('company_id', company.id).maybeSingle()
+  const { data: existing } = await sb.from('bot_configs').select('id').eq('company_id', company.id).eq('solution_record_id', contractId).maybeSingle()
   const { error } = existing
-    ? await sb.from('bot_configs').update({ schedule_config: config }).eq('company_id', company.id)
-    : await sb.from('bot_configs').insert({ company_id: company.id, schedule_config: config, active: true })
+    ? await sb.from('bot_configs').update({ schedule_config: config }).eq('id', existing.id)
+    : await sb.from('bot_configs').insert({ company_id: company.id, solution_record_id: contractId, schedule_config: config, active: true })
   if (error) { toast('Erro ao salvar: ' + error.message, 'error'); return }
   toast('Disponibilidade salva!', 'success')
 }
