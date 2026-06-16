@@ -198,7 +198,7 @@
     .welcome-text h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .welcome-text p { color: var(--muted); font-size: 14px; }
     .welcome-emoji { font-size: 48px; }
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
     .stat-card { background: rgba(255,255,255,.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 20px; }
     .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
     .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
@@ -483,11 +483,6 @@
             <div class="stat-label">Em Implantação</div>
             <div class="stat-value" id="stat-pending">—</div>
             <div class="stat-sub">sendo configuradas</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Custo IA — Mês Atual</div>
-            <div class="stat-value" id="stat-ai-cost">—</div>
-            <div class="stat-sub" id="stat-ai-tokens">carregando...</div>
           </div>
         </div>
         <div class="section-header">
@@ -1004,44 +999,6 @@ function renderDashboard() {
   document.getElementById('stat-active').textContent     = active
   document.getElementById('stat-pending').textContent    = pending
   document.getElementById('dash-solutions-preview').innerHTML = SOLUTIONS.map(s => buildSolCard(s, true)).join('')
-  loadAiCost()
-}
-
-async function loadAiCost() {
-  const now = new Date()
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-  const { data, error } = await sb
-    .from('token_usage')
-    .select('provider, input_tokens, output_tokens')
-    .eq('company_id', company.id)
-    .gte('created_at', monthStart)
-
-  if (error || !data) {
-    document.getElementById('stat-ai-cost').textContent = 'erro'
-    document.getElementById('stat-ai-tokens').textContent = ''
-    return
-  }
-
-  // Preços por milhão de tokens (USD)
-  const PRICES = {
-    claude:  { input: 3.00, output: 15.00 },
-    gemini:  { input: 0.075, output: 0.30 },
-  }
-
-  let totalInput = 0, totalOutput = 0, totalCost = 0
-  for (const row of data) {
-    const p = PRICES[row.provider] ?? PRICES.claude
-    totalInput  += row.input_tokens
-    totalOutput += row.output_tokens
-    totalCost   += (row.input_tokens / 1_000_000) * p.input
-                 + (row.output_tokens / 1_000_000) * p.output
-  }
-
-  const totalTokens = totalInput + totalOutput
-  document.getElementById('stat-ai-cost').textContent =
-    totalCost < 0.01 && totalCost > 0 ? '< $0.01' : `$${totalCost.toFixed(2)}`
-  document.getElementById('stat-ai-tokens').textContent =
-    totalTokens === 0 ? 'nenhum uso ainda' : `${totalTokens.toLocaleString('pt-BR')} tokens`
 }
 
 function renderCatalog() {
