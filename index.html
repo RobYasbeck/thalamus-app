@@ -102,7 +102,7 @@
     .login-s { color: rgba(255,255,255,.35); font-size: 11px; margin-bottom: 36px; letter-spacing: .04em; }
 
     .form-group { margin-bottom: 16px; }
-    label {
+    #login-screen label {
       display: block; font-size: 9px; font-weight: 700;
       color: rgba(255,255,255,.35); margin-bottom: 8px;
       letter-spacing: .12em; text-transform: uppercase;
@@ -886,29 +886,29 @@ function renderProduct(contractId) {
   ]
   const timeInput = (id, val) =>
     `<input type="time" id="${id}" value="${val}"
-      style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:5px 8px;font-size:13px;font-family:'Sora',sans-serif;width:92px">`
+      style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:3px 6px;font-size:11px;font-family:'Sora',sans-serif;width:80px">`
 
   const schedRows = schedDays.map(([key, lbl]) =>
-    `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1e293b;flex-wrap:wrap">
+    `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #E7EAEE;flex-wrap:wrap">
       <input type="checkbox" id="sched-${key}-${contractId}"
         onchange="toggleSchedDay('${key}','${contractId}',this.checked)"
-        style="width:16px;height:16px;accent-color:#2563eb;cursor:pointer;flex-shrink:0">
+        style="width:14px;height:14px;accent-color:#2563eb;cursor:pointer;flex-shrink:0">
       <label for="sched-${key}-${contractId}"
-        style="width:90px;font-size:11px;font-weight:600;color:#16263F;cursor:pointer;flex-shrink:0;text-transform:uppercase;letter-spacing:.04em">${lbl}</label>
-      <div id="sched-times-${key}-${contractId}" style="display:flex;align-items:center;gap:6px">
+        style="width:80px;font-size:11px;font-weight:600;color:#16263F;cursor:pointer;flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;font-family:'Sora',sans-serif">${lbl}</label>
+      <div id="sched-times-${key}-${contractId}" style="display:flex;align-items:center;gap:4px">
         ${timeInput(`sched-start-${key}-${contractId}`, '08:00')}
-        <span style="color:#64748b;font-size:12px">às</span>
+        <span style="color:#64748b;font-size:11px">às</span>
         ${timeInput(`sched-end-${key}-${contractId}`, '18:00')}
       </div>
-      <div id="sched-lunch-wrap-${key}-${contractId}" style="display:flex;align-items:center;gap:6px;padding-left:10px;border-left:1px solid #1e293b;flex-shrink:0">
+      <div id="sched-lunch-wrap-${key}-${contractId}" style="display:flex;align-items:center;gap:4px;padding-left:8px;border-left:1px solid #E7EAEE;flex-shrink:0">
         <input type="checkbox" id="sched-lunch-${key}-${contractId}"
           onchange="toggleLunchBlock('${key}','${contractId}',this.checked)"
-          style="width:14px;height:14px;accent-color:#f59e0b;cursor:pointer;flex-shrink:0">
+          style="width:13px;height:13px;accent-color:#f59e0b;cursor:pointer;flex-shrink:0">
         <label for="sched-lunch-${key}-${contractId}"
-          style="font-size:12px;color:#94a3b8;cursor:pointer;flex-shrink:0;white-space:nowrap">🍽 Almoço</label>
-        <div id="sched-lunch-times-${key}-${contractId}" style="display:flex;align-items:center;gap:6px;opacity:0.35">
+          style="font-size:11px;color:#94a3b8;cursor:pointer;flex-shrink:0;white-space:nowrap;text-transform:none;font-family:'Sora',sans-serif">🍽 Almoço</label>
+        <div id="sched-lunch-times-${key}-${contractId}" style="display:flex;align-items:center;gap:4px;opacity:0.4">
           ${timeInput(`sched-lunch-start-${key}-${contractId}`, '12:00')}
-          <span style="color:#64748b;font-size:12px">às</span>
+          <span style="color:#64748b;font-size:11px">às</span>
           ${timeInput(`sched-lunch-end-${key}-${contractId}`, '13:00')}
         </div>
       </div>
@@ -960,12 +960,12 @@ function renderProduct(contractId) {
     </div>
     ${['whatsapp-agent', 'whatsapp-secretary'].includes(c.solution_id) ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
-      <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
-      <p style="font-size:12px;color:#64748b;margin-bottom:14px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #1e293b">
-        <label style="font-size:13px;color:#16263F;flex-shrink:0">Duração de cada atendimento</label>
+      <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
+      <p style="font-size:11px;color:#64748b;margin-bottom:12px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1e293b">
+        <label style="font-size:11px;font-weight:500;color:#16263F;flex-shrink:0;text-transform:none;letter-spacing:normal;font-family:'Sora',sans-serif">Duração de cada atendimento</label>
         <select id="sched-duration-${contractId}"
-          style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:6px 10px;font-size:13px;font-family:'Sora',sans-serif;cursor:pointer">
+          style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:4px 8px;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer">
           <option value="30">30 minutos</option>
           <option value="45">45 minutos</option>
           <option value="60" selected>1 hora</option>
