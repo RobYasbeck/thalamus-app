@@ -242,7 +242,7 @@
     }
     .price-item { flex: 1; min-width: 90px; }
     .price-label { font-size: 9px; font-weight: 600; color: #5C6A7E; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
-    .price-value { font-size: 18px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
+    .price-value { font-size: 15px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
     .price-period { font-size: 10px; color: #5C6A7E; margin-left: 2px; }
     .price-note { width: 100%; font-size: 10px; color: #5C6A7E; padding-top: 8px; border-top: 1px solid #E7EAEE; margin-top: 4px; letter-spacing: .02em; }
 
@@ -258,7 +258,7 @@
     .my-sol-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 16px; padding: 24px; }
     .my-sol-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
     .my-sol-info { flex: 1; }
-    .my-sol-name { font-size: 15px; font-weight: 700; color: #16263F; }
+    .my-sol-name { font-size: 13px; font-weight: 700; color: #16263F; }
     .my-sol-date { font-size: 12px; color: #5C6A7E; margin-top: 2px; }
     .timeline { display: flex; align-items: flex-start; }
     .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
@@ -340,13 +340,13 @@
     .modal-bd.open { display: flex; }
     .modal { background: #FFFFFF; border-radius: 20px; padding: 28px; width: 100%; max-width: 460px; border: 1px solid #E7EAEE; box-shadow: 0 20px 60px rgba(22,38,63,.1); }
     .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .modal-title { font-size: 17px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
+    .modal-title { font-size: 15px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
     .modal-close { background: none; border: none; color: #5C6A7E; cursor: pointer; font-size: 24px; line-height: 1; padding: 0 4px; }
     .modal-close:hover { color: #16263F; }
     .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
     .modal-sol-preview { background: rgba(47,80,230,.06); border: 1px solid rgba(47,80,230,.15); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
     .modal-sol-icon { font-size: 28px; width: 48px; height: 48px; flex-shrink: 0; }
-    .modal-sol-name { font-size: 15px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
+    .modal-sol-name { font-size: 13px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
     .modal-sol-tagline { font-size: 12px; color: #5C6A7E; font-family: 'Sora', sans-serif; }
     .modal-info { font-size: 13px; color: #5C6A7E; line-height: 1.6; font-family: 'Sora', sans-serif; }
 
@@ -583,7 +583,7 @@
     <div style="margin-top:16px">
       <label style="display:block;font-size:11px;font-weight:600;color:#5C6A7E;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase;font-family:'Sora',sans-serif">Telefone para contato</label>
       <input id="contract-phone" type="tel" placeholder="(00) 00000-0000"
-        style="width:100%;padding:10px 14px;background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;color:#16263F;font-size:15px;outline:none;font-family:'Sora',sans-serif"
+        style="width:100%;padding:10px 14px;background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;color:#16263F;font-size:13px;outline:none;font-family:'Sora',sans-serif"
         oninput="this.style.borderColor='rgba(47,80,230,.6)'"
         onblur="this.style.borderColor='#E7EAEE'">
     </div>
@@ -933,27 +933,27 @@ function renderProduct(contractId) {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Mensalidade</div>
-        <div style="font-size:20px;font-weight:700;color:#16263F">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
+        <div style="font-size:15px;font-weight:700;color:#16263F">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
         ${c.extra_monthly > 0 ? '<div style="font-size:11px;color:#64748b;margin-top:2px">base + R$ ' + Number(c.extra_monthly).toLocaleString('pt-BR') + ' adicional</div>' : ''}
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Implantação</div>
-        <div style="font-size:20px;font-weight:700;color:${c.charge_setup === false ? 'var(--green)' : '#e2e8f0'}">${c.charge_setup === false ? 'Isento' : 'R$ ' + sol.pricing.setup.toLocaleString('pt-BR')}</div>
+        <div style="font-size:15px;font-weight:700;color:${c.charge_setup === false ? 'var(--green)' : '#e2e8f0'}">${c.charge_setup === false ? 'Isento' : 'R$ ' + sol.pricing.setup.toLocaleString('pt-BR')}</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Contratado em</div>
-        <div style="font-size:18px;font-weight:700;color:#16263F">${contracted}</div>
+        <div style="font-size:14px;font-weight:700;color:#16263F">${contracted}</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Vencimento</div>
-        <div style="font-size:18px;font-weight:700;color:#16263F">${billingDay}</div>
+        <div style="font-size:14px;font-weight:700;color:#16263F">${billingDay}</div>
       </div>
     </div>` : `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
       <div>
         <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Status do Bot</div>
         <div style="display:flex;align-items:center;gap:12px">
-          <div id="agent-online-${contractId}" style="font-size:15px">Carregando...</div>
+          <div id="agent-online-${contractId}" style="font-size:13px">Carregando...</div>
           <button id="agent-refresh-${contractId}" onclick="refreshBotStatus('${contractId}')" style="background:#F5F7F9;border:none;color:#5C6A7E;border-radius:6px;padding:4px 10px;font-size:13px;cursor:pointer" title="Verificar conexão">↻</button>
         </div>
       </div>
@@ -987,15 +987,15 @@ function renderProduct(contractId) {
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
         <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Conversas</div>
-          <div id="chatbot-convs-${contractId}" style="font-size:24px;font-weight:700;color:#16263F">—</div>
+          <div id="chatbot-convs-${contractId}" style="font-size:18px;font-weight:700;color:#16263F">—</div>
         </div>
         <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Agendamentos</div>
-          <div id="chatbot-appts-${contractId}" style="font-size:24px;font-weight:700;color:#16263F">—</div>
+          <div id="chatbot-appts-${contractId}" style="font-size:18px;font-weight:700;color:#16263F">—</div>
         </div>
         <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Aguard. humano</div>
-          <div id="chatbot-handoff-${contractId}" style="font-size:24px;font-weight:700;color:#f59e0b">—</div>
+          <div id="chatbot-handoff-${contractId}" style="font-size:18px;font-weight:700;color:#f59e0b">—</div>
         </div>
       </div>
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Agendamentos</div>
