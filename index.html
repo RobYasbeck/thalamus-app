@@ -11,7 +11,7 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Sora', 'Segoe UI', sans-serif; font-size: 13px; color: #16263F; height: 100vh; overflow: hidden;
+      font-family: 'Sora', 'Segoe UI', sans-serif; font-size: 14px; color: #16263F; height: 100vh; overflow: hidden;
       background: #16263F;
     }
 
@@ -153,7 +153,7 @@
     .nav-section:first-child { margin-top: 4px; }
     .nav-item {
       display: flex; align-items: center; gap: 10px; padding: 9px 10px;
-      border-radius: 8px; cursor: pointer; color: rgba(255,255,255,.55); font-size: 13px;
+      border-radius: 8px; cursor: pointer; color: rgba(255,255,255,.55); font-size: 14px;
       transition: all 0.15s; margin-bottom: 1px; border: none; background: none;
       width: 100%; text-align: left; font-family: 'Sora', sans-serif; font-weight: 400;
     }
@@ -197,8 +197,8 @@
     .welcome-emoji { font-size: 48px; }
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
     .stat-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 14px; padding: 20px; }
-    .stat-label { font-size: 12px; color: #5C6A7E; margin-bottom: 8px; font-weight: 500; }
-    .stat-value { font-size: 22px; font-weight: 700; color: #16263F; }
+    .stat-label { font-size: 11px; color: #5C6A7E; margin-bottom: 8px; font-weight: 400; text-transform: uppercase; letter-spacing: .08em; }
+    .stat-value { font-size: 30px; font-weight: 300; color: #16263F; }
     .stat-sub { font-size: 12px; color: #5C6A7E; margin-top: 4px; }
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .section-label { font-size: 14px; font-weight: 600; color: #16263F; }
@@ -254,9 +254,9 @@
     .badge-contracted { background: rgba(47,80,230,.1); color: #2F50E6; }
 
     /* ── STATUS TIMELINE ── */
-    .my-solutions-list { display: flex; flex-direction: column; gap: 10px; }
-    .my-sol-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 12px; padding: 16px; }
-    .my-sol-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .my-solutions-list { display: flex; flex-direction: column; gap: 12px; }
+    .my-sol-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 12px; padding: 20px 24px; }
+    .my-sol-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
     .my-sol-info { flex: 1; }
     .my-sol-name { font-size: 13px; font-weight: 700; color: #16263F; }
     .my-sol-date { font-size: 12px; color: #5C6A7E; margin-top: 2px; }
@@ -293,8 +293,8 @@
       background: #FFFFFF; border: 1px solid #E7EAEE;
       border-radius: 14px; padding: 20px 22px;
     }
-    .bill-stat-label { font-size: 12px; color: #5C6A7E; margin-bottom: 6px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-    .bill-stat-value { font-size: 20px; font-weight: 700; color: #16263F; }
+    .bill-stat-label { font-size: 11px; color: #5C6A7E; margin-bottom: 6px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; }
+    .bill-stat-value { font-size: 28px; font-weight: 300; color: #16263F; }
     .bill-stat-sub   { font-size: 11px; color: #5C6A7E; margin-top: 4px; }
     .billing-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 4px;
@@ -321,7 +321,7 @@
       background: rgba(47,80,230,.06); border: 1px solid rgba(47,80,230,.18);
     }
     .billing-total-label { font-size: 13px; font-weight: 700; color: #2F50E6; }
-    .billing-total-value { font-size: 15px; font-weight: 700; color: #16263F; }
+    .billing-total-value { font-size: 20px; font-weight: 300; color: #16263F; }
     .billing-empty { color: #5C6A7E; font-size: 13px; padding: 14px 0; }
     .forecast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .forecast-card {
@@ -933,20 +933,20 @@ function renderProduct(contractId) {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Mensalidade</div>
-        <div style="font-size:15px;font-weight:700;color:#16263F">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
+        <div style="font-size:22px;font-weight:300;color:#16263F">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
         ${c.extra_monthly > 0 ? '<div style="font-size:11px;color:#64748b;margin-top:2px">base + R$ ' + Number(c.extra_monthly).toLocaleString('pt-BR') + ' adicional</div>' : ''}
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Implantação</div>
-        <div style="font-size:15px;font-weight:700;color:${c.charge_setup === false ? 'var(--green)' : '#e2e8f0'}">${c.charge_setup === false ? 'Isento' : 'R$ ' + sol.pricing.setup.toLocaleString('pt-BR')}</div>
+        <div style="font-size:22px;font-weight:300;color:${c.charge_setup === false ? 'var(--green)' : '#e2e8f0'}">${c.charge_setup === false ? 'Isento' : 'R$ ' + sol.pricing.setup.toLocaleString('pt-BR')}</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Contratado em</div>
-        <div style="font-size:14px;font-weight:700;color:#16263F">${contracted}</div>
+        <div style="font-size:16px;font-weight:300;color:#16263F">${contracted}</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Vencimento</div>
-        <div style="font-size:14px;font-weight:700;color:#16263F">${billingDay}</div>
+        <div style="font-size:16px;font-weight:300;color:#16263F">${billingDay}</div>
       </div>
     </div>` : `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
@@ -987,15 +987,15 @@ function renderProduct(contractId) {
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
         <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Conversas</div>
-          <div id="chatbot-convs-${contractId}" style="font-size:18px;font-weight:700;color:#16263F">—</div>
+          <div id="chatbot-convs-${contractId}" style="font-size:24px;font-weight:300;color:#16263F">—</div>
         </div>
         <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Agendamentos</div>
-          <div id="chatbot-appts-${contractId}" style="font-size:18px;font-weight:700;color:#16263F">—</div>
+          <div id="chatbot-appts-${contractId}" style="font-size:24px;font-weight:300;color:#16263F">—</div>
         </div>
         <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Aguard. humano</div>
-          <div id="chatbot-handoff-${contractId}" style="font-size:18px;font-weight:700;color:#f59e0b">—</div>
+          <div id="chatbot-handoff-${contractId}" style="font-size:24px;font-weight:300;color:#f59e0b">—</div>
         </div>
       </div>
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Agendamentos</div>
