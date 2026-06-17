@@ -254,9 +254,9 @@
     .badge-contracted { background: rgba(47,80,230,.1); color: #2F50E6; }
 
     /* ── STATUS TIMELINE ── */
-    .my-solutions-list { display: flex; flex-direction: column; gap: 14px; }
-    .my-sol-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 16px; padding: 24px; }
-    .my-sol-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .my-solutions-list { display: flex; flex-direction: column; gap: 10px; }
+    .my-sol-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 12px; padding: 16px; }
+    .my-sol-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .my-sol-info { flex: 1; }
     .my-sol-name { font-size: 13px; font-weight: 700; color: #16263F; }
     .my-sol-date { font-size: 12px; color: #5C6A7E; margin-top: 2px; }
@@ -917,7 +917,7 @@ function renderProduct(contractId) {
 
   el.innerHTML = `
     <div class="page-header" style="display:flex;align-items:center;gap:14px">
-      <div class="sol-icon ${sol.icon_class}" style="width:48px;height:48px;flex-shrink:0;font-size:22px;display:flex;align-items:center;justify-content:center;border-radius:12px">${sol.icon}</div>
+      <div class="sol-icon ${sol.icon_class}" style="width:36px;height:36px;flex-shrink:0;font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:10px">${sol.icon}</div>
       <div>
         <div class="page-title">${label}</div>
         <div class="page-sub">${sol.tagline}</div>
@@ -1123,7 +1123,7 @@ function renderMySolutions() {
     return `
       <div class="my-sol-card">
         <div class="my-sol-header">
-          <div class="sol-icon ${sol.icon_class}" style="width:44px;height:44px;font-size:20px">${sol.icon}</div>
+          <div class="sol-icon ${sol.icon_class}" style="width:32px;height:32px;font-size:15px">${sol.icon}</div>
           <div class="my-sol-info">
             <div class="my-sol-name">${sol.name}</div>
             <div class="my-sol-date">Contratado em ${date}</div>
