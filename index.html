@@ -583,9 +583,9 @@
     <div style="margin-top:16px">
       <label style="display:block;font-size:11px;font-weight:600;color:#5C6A7E;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase;font-family:'Sora',sans-serif">Telefone para contato</label>
       <input id="contract-phone" type="tel" placeholder="(00) 00000-0000"
-        style="width:100%;padding:10px 14px;background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;color:#16263F;font-size:13px;outline:none;font-family:'Sora',sans-serif"
+        style="width:100%;padding:10px 14px;background:#EDF0F4;border:1px solid #D7DCE3;border-radius:10px;color:#16263F;font-size:13px;outline:none;font-family:'Sora',sans-serif"
         oninput="this.style.borderColor='rgba(47,80,230,.6)'"
-        onblur="this.style.borderColor='#E7EAEE'">
+        onblur="this.style.borderColor='#D7DCE3'">
     </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal('modal-contract')">Cancelar</button>
@@ -886,7 +886,7 @@ function renderProduct(contractId) {
   ]
   const timeInput = (id, val) =>
     `<input type="time" id="${id}" value="${val}"
-      style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:3px 6px;font-size:11px;font-family:'Sora',sans-serif;width:80px">`
+      style="background:#EDF0F4;border:1px solid #D7DCE3;border-radius:6px;color:#16263F;padding:3px 6px;font-size:11px;font-family:'Sora',sans-serif;width:80px">`
 
   const schedRows = schedDays.map(([key, lbl]) =>
     `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #E7EAEE;flex-wrap:wrap">
@@ -965,7 +965,7 @@ function renderProduct(contractId) {
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1e293b">
         <label style="font-size:11px;font-weight:500;color:#16263F;flex-shrink:0;text-transform:none;letter-spacing:normal;font-family:'Sora',sans-serif">Duração de cada atendimento</label>
         <select id="sched-duration-${contractId}"
-          style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:4px 8px;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer">
+          style="background:#EDF0F4;border:1px solid #D7DCE3;border-radius:6px;color:#16263F;padding:4px 8px;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer">
           <option value="30">30 minutos</option>
           <option value="45">45 minutos</option>
           <option value="60" selected>1 hora</option>
