@@ -817,7 +817,7 @@ function renderProductNav() {
     const iconHtml = '<span class="nav-icon"><span class="nav-marker-sm"></span></span>'
     const isActive = c.id === activeProductId
     return `<button class="nav-item ${isActive ? 'active' : ''}" id="nav-product-${c.id}"
-      onclick="goProduct('${c.id}')" style="font-size:13px;padding:7px 10px">
+      onclick="goProduct('${c.id}')"
       ${iconHtml}
       <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</span>
     </button>`
