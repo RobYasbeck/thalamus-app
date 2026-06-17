@@ -6,42 +6,41 @@
   <title>Thalamus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Orbitron', 'Segoe UI', sans-serif; color: #e2e8f0; height: 100vh; overflow: hidden;
-      background: #060914;
+      font-family: 'Sora', 'Segoe UI', sans-serif; color: #16263F; height: 100vh; overflow: hidden;
+      background: #16263F;
     }
 
-    /* fundo atmosférico global (login + app) */
+    /* fundo atmosférico (login) */
     .atm-bg {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 60% at 15% 50%, rgba(109,40,217,.2) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 85% 15%, rgba(79,70,229,.15) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 50% at 65% 85%, rgba(16,185,129,.06) 0%, transparent 50%),
-        #060914;
+        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(47,80,230,.12) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(255,255,255,.04) 0%, transparent 50%),
+        #16263F;
     }
     .atm-grid {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .03;
-      background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .012;
+      background-image: linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px);
       background-size: 60px 60px;
     }
     .atm-orb {
-      position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0;
+      position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
       animation: float linear infinite;
     }
-    .atm-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #7c3aed 0%, transparent 70%); top: -160px; left: -120px; opacity: .18; animation-duration: 22s; }
-    .atm-orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #4f46e5 0%, transparent 70%); bottom: -120px; right: -80px; opacity: .15; animation-duration: 28s; animation-delay: -10s; }
-    .atm-orb-3 { width: 320px; height: 320px; background: radial-gradient(circle, #10b981 0%, transparent 70%); top: 50%; left: 55%; opacity: .07; animation-duration: 18s; animation-delay: -5s; }
+    .atm-orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, #2F50E6 0%, transparent 70%); top: -200px; left: -200px; opacity: .1; animation-duration: 30s; }
+    .atm-orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #16263F 0%, transparent 70%); bottom: -150px; right: -100px; opacity: .3; animation-duration: 35s; animation-delay: -12s; }
+    .atm-orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, #2F50E6 0%, transparent 70%); top: 60%; left: 60%; opacity: .06; animation-duration: 25s; animation-delay: -8s; }
 
     :root {
-      --bg: #0f172a; --card: #1e293b; --card2: #334155; --border: #334155;
-      --accent: #7c3aed; --accent-h: #6d28d9; --text: #e2e8f0; --muted: #94a3b8;
-      --green: #10b981; --blue: #3b82f6; --yellow: #f59e0b;
+      --bg: #F5F7F9; --card: #FFFFFF; --card2: #F5F7F9; --border: #E7EAEE;
+      --accent: #2F50E6; --accent-h: #2441cc; --text: #16263F; --muted: #5C6A7E;
+      --green: #059669; --blue: #2F50E6; --yellow: #d97706;
     }
 
     /* ── LOGIN IMERSIVO ── */
@@ -83,17 +82,17 @@
 
     .login-logo-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
     .login-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
-    .login-logo-fallback { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-    .login-brand { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
+    .login-logo-fallback { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg,#2F50E6,#16263F); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .login-brand { font-size: 20px; font-weight: 300; color: #fff; letter-spacing: .3em; font-family: 'Sora', sans-serif; text-transform: uppercase; }
     .login-brand-wrap { display: flex; flex-direction: column; }
     .login-brand-badge {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-      color: #a78bfa; margin-top: 2px;
+      color: rgba(255,255,255,.5); margin-top: 2px;
     }
     .login-brand-badge::before {
       content: ''; display: inline-block; width: 5px; height: 5px;
-      border-radius: 50%; background: #7c3aed;
+      border-radius: 50%; background: #2F50E6;
     }
 
     .login-h {
@@ -110,19 +109,19 @@
     }
     input[type=email], input[type=password] {
       width: 100%; padding: 13px 20px;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
       border-radius: 100px; color: #fff; font-size: 16px; outline: none;
-      transition: border-color 0.25s, background 0.25s; font-family: 'Rajdhani', sans-serif; font-weight: 500;
+      transition: border-color 0.25s, background 0.25s; font-family: 'Sora', sans-serif; font-weight: 400;
     }
-    input[type=email]::placeholder, input[type=password]::placeholder { color: rgba(255,255,255,.25); }
-    input:focus { border-color: rgba(124,58,237,.7); background: rgba(124,58,237,.08); }
+    input[type=email]::placeholder, input[type=password]::placeholder { color: rgba(255,255,255,.3); }
+    input:focus { border-color: rgba(47,80,230,.8); background: rgba(47,80,230,.12); }
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; letter-spacing: .02em; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-family: 'Sora', sans-serif; letter-spacing: .02em; }
     .btn-primary {
-      background: #fff; color: #0f0a1e;
+      background: #fff; color: #16263F;
       box-shadow: 0 4px 24px rgba(255,255,255,.15);
     }
-    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(255,255,255,.25); background: #f1f0ff; }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(255,255,255,.25); background: #E7EAEE; }
     .btn-primary:active:not(:disabled) { transform: translateY(0); }
     .btn-primary:disabled { opacity: 0.4; cursor: default; }
     .btn-secondary { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; }
@@ -132,35 +131,34 @@
     .err-box { color: #f87171; font-size: 12px; margin-top: 12px; }
 
     /* ── APP ── */
-    #app { display: none; height: 100vh; position: relative; z-index: 1; font-family: 'Rajdhani', 'Segoe UI', sans-serif; }
+    #app { display: none; height: 100vh; position: relative; z-index: 1; font-family: 'Sora', 'Segoe UI', sans-serif; background: #F5F7F9; color: #16263F; }
     .app-layout { display: flex; height: 100vh; }
 
     /* ── SIDEBAR ── */
     aside {
       width: 232px; min-height: 100vh;
-      background: rgba(6,9,20,.75);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: #16263F;
       display: flex; flex-direction: column; flex-shrink: 0;
-      border-right: 1px solid rgba(255,255,255,.07);
+      border-right: 1px solid rgba(255,255,255,.08);
       position: relative; z-index: 2;
-      font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+      font-family: 'Sora', 'Segoe UI', sans-serif;
     }
-    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; gap: 10px; }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; }
     .sidebar-logo { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
-    .sidebar-logo-fallback { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#7c3aed,#4f46e5); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
-    .sidebar-brand { font-weight: 700; font-size: 15px; color: #fff; }
-    .sidebar-sub { font-size: 11px; color: var(--muted); }
+    .sidebar-logo-fallback { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#2F50E6,#16263F); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .sidebar-brand { font-size: 12px; font-weight: 300; color: #fff; letter-spacing: .28em; text-transform: uppercase; font-family: 'Sora', sans-serif; }
+    .sidebar-sub { font-size: 11px; color: rgba(255,255,255,.45); }
     nav { flex: 1; padding: 12px 8px; }
-    .nav-section { font-size: 10px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: .06em; padding: 0 8px; margin: 16px 0 6px; }
+    .nav-section { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: .06em; padding: 0 8px; margin: 16px 0 6px; }
     .nav-section:first-child { margin-top: 4px; }
     .nav-item {
       display: flex; align-items: center; gap: 10px; padding: 9px 10px;
-      border-radius: 8px; cursor: pointer; color: var(--muted); font-size: 15px;
+      border-radius: 8px; cursor: pointer; color: rgba(255,255,255,.55); font-size: 15px;
       transition: all 0.15s; margin-bottom: 1px; border: none; background: none;
-      width: 100%; text-align: left; font-family: 'Rajdhani', sans-serif; font-weight: 500;
+      width: 100%; text-align: left; font-family: 'Sora', sans-serif; font-weight: 400;
     }
-    .nav-item:hover { background: rgba(255,255,255,.06); color: var(--text); }
-    .nav-item.active { background: rgba(124,58,237,.2); color: #a78bfa; }
+    .nav-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .nav-item.active { background: rgba(47,80,230,.3); color: #fff; }
     .nav-icon { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .nav-marker { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; flex-shrink: 0; }
     .nav-marker-sm { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .4; flex-shrink: 0; }
@@ -170,122 +168,120 @@
     .nav-item:hover .nav-marker { opacity: .8; }
     .nav-sol-icon { width: 20px; height: 20px; border-radius: 6px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .nav-sol-icon.img        { background: none; }
-    .nav-sol-icon.img-blue   { background: rgba(37,99,235,.25); padding: 2px; }
-    .nav-sol-icon.img-purple { background: rgba(124,58,237,.25); }
-    .nav-sol-icon.img-gray   { background: rgba(100,110,130,.3); }
+    .nav-sol-icon.img-blue   { background: rgba(47,80,230,.3); padding: 2px; }
+    .nav-sol-icon.img-purple { background: rgba(124,58,237,.3); }
+    .nav-sol-icon.img-gray   { background: rgba(255,255,255,.15); }
     .nav-sol-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
-    .sidebar-footer { padding: 12px 8px; border-top: 1px solid rgba(255,255,255,.06); }
-    .company-name { font-size: 11px; color: var(--muted); padding: 0 10px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sidebar-footer { padding: 12px 8px; border-top: 1px solid rgba(255,255,255,.07); }
+    .company-name { font-size: 11px; color: rgba(255,255,255,.4); padding: 0 10px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* ── MAIN ── */
-    main { flex: 1; overflow-y: auto; padding: 32px 36px; background: transparent; position: relative; z-index: 1; }
+    main { flex: 1; overflow-y: auto; padding: 32px 36px; background: #F5F7F9; position: relative; z-index: 1; color: #16263F; }
     section { display: none; animation: fadeInUp .5s ease forwards; opacity: 0; }
     section.active { display: block; }
 
     /* ── PAGE HEADER ── */
     .page-header { margin-bottom: 28px; }
-    .page-title { font-size: 22px; font-weight: 700; color: #fff; }
-    .page-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .page-title { font-size: 22px; font-weight: 700; color: #16263F; }
+    .page-sub { color: #5C6A7E; font-size: 14px; margin-top: 4px; }
 
     /* ── DASHBOARD ── */
     .welcome-banner {
-      background: linear-gradient(135deg, rgba(124,58,237,.15) 0%, rgba(79,70,229,.08) 100%);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(124,58,237,.25); border-radius: 16px;
+      background: linear-gradient(135deg, #16263F 0%, #1e3560 100%);
+      border-radius: 16px;
       padding: 28px 32px; margin-bottom: 28px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .welcome-text h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    .welcome-text p { color: var(--muted); font-size: 14px; }
+    .welcome-text p { color: rgba(255,255,255,.6); font-size: 14px; }
     .welcome-emoji { font-size: 48px; }
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
-    .stat-card { background: rgba(255,255,255,.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 20px; }
-    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
-    .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
-    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .stat-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 14px; padding: 20px; }
+    .stat-label { font-size: 12px; color: #5C6A7E; margin-bottom: 8px; font-weight: 500; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #16263F; }
+    .stat-sub { font-size: 12px; color: #5C6A7E; margin-top: 4px; }
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .section-label { font-size: 14px; font-weight: 600; color: #fff; }
+    .section-label { font-size: 14px; font-weight: 600; color: #16263F; }
 
     /* ── SOLUTION CARDS ── */
     .solutions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
     .sol-card {
-      background: rgba(255,255,255,.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,.08); border-radius: 16px;
-      padding: 24px; transition: border-color 0.2s, transform 0.2s, background 0.2s;
+      background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 16px;
+      padding: 24px; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
       display: flex; flex-direction: column; gap: 14px;
     }
-    .sol-card:hover { border-color: rgba(124,58,237,.35); background: rgba(124,58,237,.06); transform: translateY(-2px); }
+    .sol-card:hover { border-color: #2F50E6; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(47,80,230,.1); }
     .sol-card-header { display: flex; align-items: flex-start; gap: 14px; }
     .sol-icon {
       width: 48px; height: 48px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; flex-shrink: 0;
     }
-    .sol-icon.green  { background: rgba(16,185,129,.15); }
-    .sol-icon.blue   { background: rgba(59,130,246,.15); }
-    .sol-icon.purple { background: rgba(124,58,237,.15); }
-    .sol-icon.pink   { background: rgba(236,72,153,.15); }
+    .sol-icon.green  { background: rgba(5,150,105,.1); }
+    .sol-icon.blue   { background: rgba(47,80,230,.1); }
+    .sol-icon.purple { background: rgba(124,58,237,.1); }
+    .sol-icon.pink   { background: rgba(236,72,153,.1); }
     .sol-icon.img        { background: none; padding: 0; overflow: hidden; }
-    .sol-icon.img-blue   { background: rgba(37,99,235,.18); padding: 5px; overflow: hidden; }
-    .sol-icon.img-purple { background: rgba(124,58,237,.18); padding: 0; overflow: hidden; }
-    .sol-icon.img-gray   { background: rgba(100,110,130,.2); padding: 0; overflow: hidden; }
+    .sol-icon.img-blue   { background: rgba(47,80,230,.12); padding: 5px; overflow: hidden; }
+    .sol-icon.img-purple { background: rgba(124,58,237,.12); padding: 0; overflow: hidden; }
+    .sol-icon.img-gray   { background: rgba(92,106,126,.12); padding: 0; overflow: hidden; }
     .sol-icon.img img, .sol-icon.img-blue img, .sol-icon.img-purple img, .sol-icon.img-gray img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
-    .sol-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.3; }
-    .sol-tagline { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .sol-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; }
-    .sol-how { background: rgba(255,255,255,.03); border-radius: 10px; padding: 14px; }
-    .sol-how-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
-    .sol-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cbd5e1; margin-bottom: 6px; }
+    .sol-name { font-size: 15px; font-weight: 700; color: #16263F; line-height: 1.3; }
+    .sol-tagline { font-size: 12px; color: #5C6A7E; margin-top: 2px; }
+    .sol-desc { font-size: 13px; color: #5C6A7E; line-height: 1.6; }
+    .sol-how { background: #F5F7F9; border-radius: 10px; padding: 14px; }
+    .sol-how-title { font-size: 11px; font-weight: 600; color: #5C6A7E; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+    .sol-step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #16263F; margin-bottom: 6px; }
     .sol-step:last-child { margin-bottom: 0; }
-    .step-num { width: 18px; height: 18px; border-radius: 50%; background: rgba(124,58,237,.3); color: #a78bfa; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-num { width: 18px; height: 18px; border-radius: 50%; background: rgba(47,80,230,.12); color: #2F50E6; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     /* ── PRICING ── */
     .sol-pricing {
       display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto;
-      background: rgba(255,255,255,.03); border-radius: 10px; padding: 14px;
-      border: 1px solid rgba(255,255,255,.06);
+      background: #F5F7F9; border-radius: 10px; padding: 14px;
+      border: 1px solid #E7EAEE;
     }
     .price-item { flex: 1; min-width: 90px; }
-    .price-label { font-size: 9px; font-weight: 600; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
-    .price-value { font-size: 18px; font-weight: 700; color: #fff; font-family: 'Rajdhani', sans-serif; }
-    .price-period { font-size: 10px; color: rgba(255,255,255,.35); margin-left: 2px; }
-    .price-note { width: 100%; font-size: 10px; color: rgba(255,255,255,.3); padding-top: 8px; border-top: 1px solid rgba(255,255,255,.06); margin-top: 4px; letter-spacing: .02em; }
+    .price-label { font-size: 9px; font-weight: 600; color: #5C6A7E; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+    .price-value { font-size: 18px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
+    .price-period { font-size: 10px; color: #5C6A7E; margin-left: 2px; }
+    .price-note { width: 100%; font-size: 10px; color: #5C6A7E; padding-top: 8px; border-top: 1px solid #E7EAEE; margin-top: 4px; letter-spacing: .02em; }
 
     .sol-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; font-family: 'Rajdhani', sans-serif; }
-    .badge-active     { background: rgba(16,185,129,.15); color: #10b981; }
-    .badge-pending    { background: rgba(245,158,11,.15); color: #f59e0b; }
-    .badge-available  { background: rgba(148,163,184,.1); color: var(--muted); border: 1px solid var(--border); }
-    .badge-contracted { background: rgba(124,58,237,.15); color: #a78bfa; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; font-family: 'Sora', sans-serif; }
+    .badge-active     { background: rgba(5,150,105,.1); color: #059669; }
+    .badge-pending    { background: rgba(217,119,6,.1); color: #d97706; }
+    .badge-available  { background: #F5F7F9; color: #5C6A7E; border: 1px solid #E7EAEE; }
+    .badge-contracted { background: rgba(47,80,230,.1); color: #2F50E6; }
 
     /* ── STATUS TIMELINE ── */
     .my-solutions-list { display: flex; flex-direction: column; gap: 14px; }
-    .my-sol-card { background: rgba(255,255,255,.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 24px; }
+    .my-sol-card { background: #FFFFFF; border: 1px solid #E7EAEE; border-radius: 16px; padding: 24px; }
     .my-sol-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
     .my-sol-info { flex: 1; }
-    .my-sol-name { font-size: 15px; font-weight: 700; color: #fff; }
-    .my-sol-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .my-sol-name { font-size: 15px; font-weight: 700; color: #16263F; }
+    .my-sol-date { font-size: 12px; color: #5C6A7E; margin-top: 2px; }
     .timeline { display: flex; align-items: flex-start; }
     .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
     .timeline-step:not(:last-child)::after {
       content: ''; position: absolute; top: 14px; left: calc(50% + 14px);
-      width: calc(100% - 28px); height: 2px; background: var(--border);
+      width: calc(100% - 28px); height: 2px; background: #E7EAEE;
     }
     .timeline-step.done:not(:last-child)::after { background: var(--green); }
     .tl-dot {
-      width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border);
-      background: var(--bg); display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%; border: 2px solid #E7EAEE;
+      background: #FFFFFF; display: flex; align-items: center; justify-content: center;
       font-size: 12px; z-index: 1; margin-bottom: 8px;
     }
-    .timeline-step.done .tl-dot { border-color: var(--green); background: rgba(16,185,129,.15); color: var(--green); }
-    .timeline-step.current .tl-dot { border-color: var(--yellow); background: rgba(245,158,11,.15); color: var(--yellow); animation: pulse 2s infinite; }
+    .timeline-step.done .tl-dot { border-color: var(--green); background: rgba(5,150,105,.1); color: var(--green); }
+    .timeline-step.current .tl-dot { border-color: var(--yellow); background: rgba(217,119,6,.1); color: var(--yellow); animation: pulse 2s infinite; }
     .timeline-step.final .tl-dot { border-color: var(--green); background: var(--green); color: #fff; }
-    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)} 50%{box-shadow:0 0 0 6px rgba(245,158,11,0)} }
-    .tl-label { font-size: 11px; color: var(--muted); text-align: center; font-weight: 500; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.3)} 50%{box-shadow:0 0 0 6px rgba(217,119,6,0)} }
+    .tl-label { font-size: 11px; color: #5C6A7E; text-align: center; font-weight: 500; }
     .timeline-step.done .tl-label    { color: var(--green); }
     .timeline-step.current .tl-label { color: var(--yellow); }
     .timeline-step.final .tl-label   { color: var(--green); }
-    .tl-date  { font-size: 10px; color: var(--muted); text-align: center; margin-top: 2px; opacity: .7; }
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .tl-date  { font-size: 10px; color: #5C6A7E; text-align: center; margin-top: 2px; opacity: .7; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #5C6A7E; }
     .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-state p { font-size: 14px; margin-bottom: 20px; }
 
@@ -294,71 +290,71 @@
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
     }
     .bill-stat {
-      background: rgba(255,255,255,.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.08);
+      background: #FFFFFF; border: 1px solid #E7EAEE;
       border-radius: 14px; padding: 20px 22px;
     }
-    .bill-stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-    .bill-stat-value { font-size: 26px; font-weight: 700; color: #fff; }
-    .bill-stat-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .bill-stat-label { font-size: 12px; color: #5C6A7E; margin-bottom: 6px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .bill-stat-value { font-size: 26px; font-weight: 700; color: #16263F; }
+    .bill-stat-sub   { font-size: 11px; color: #5C6A7E; margin-top: 4px; }
     .billing-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 4px;
     }
     .billing-block-title {
-      font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em;
+      font-size: 12px; font-weight: 700; color: #5C6A7E; text-transform: uppercase; letter-spacing: .05em;
       margin-bottom: 12px;
     }
     .billing-row {
       display: flex; align-items: center; justify-content: space-between; padding: 13px 16px;
-      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+      background: #F5F7F9; border: 1px solid #E7EAEE;
       border-radius: 10px; margin-bottom: 8px;
     }
     .billing-row:last-child { margin-bottom: 0; }
     .billing-row-left  { display: flex; align-items: center; gap: 10px; }
-    .billing-row-name  { font-size: 13px; font-weight: 600; color: #fff; }
-    .billing-row-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .billing-row-name  { font-size: 13px; font-weight: 600; color: #16263F; }
+    .billing-row-sub   { font-size: 11px; color: #5C6A7E; margin-top: 2px; }
     .billing-row-value { font-size: 14px; font-weight: 700; color: var(--green); white-space: nowrap; }
-    .billing-row-value.setup { color: #f59e0b; }
-    .billing-row-value.extra { color: #94a3b8; }
+    .billing-row-value.setup { color: #d97706; }
+    .billing-row-value.extra { color: #5C6A7E; }
     .billing-total {
       display: flex; justify-content: space-between; align-items: center;
       padding: 14px 16px; border-radius: 10px; margin-top: 12px;
-      background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.25);
+      background: rgba(47,80,230,.06); border: 1px solid rgba(47,80,230,.18);
     }
-    .billing-total-label { font-size: 13px; font-weight: 700; color: #a78bfa; }
-    .billing-total-value { font-size: 18px; font-weight: 700; color: #fff; }
-    .billing-empty { color: var(--muted); font-size: 13px; padding: 14px 0; }
+    .billing-total-label { font-size: 13px; font-weight: 700; color: #2F50E6; }
+    .billing-total-value { font-size: 18px; font-weight: 700; color: #16263F; }
+    .billing-empty { color: #5C6A7E; font-size: 13px; padding: 14px 0; }
     .forecast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .forecast-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+      background: #FFFFFF; border: 1px solid #E7EAEE;
       border-radius: 14px; padding: 18px 20px;
     }
-    .forecast-month   { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
-    .forecast-line    { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    .forecast-line strong { color: #fff; font-weight: 600; }
-    .forecast-divider { border: none; border-top: 1px solid rgba(255,255,255,.06); margin: 10px 0; }
-    .forecast-total   { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; }
+    .forecast-month   { font-size: 12px; color: #5C6A7E; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
+    .forecast-line    { display: flex; justify-content: space-between; font-size: 12px; color: #5C6A7E; margin-bottom: 6px; }
+    .forecast-line strong { color: #16263F; font-weight: 600; }
+    .forecast-divider { border: none; border-top: 1px solid #E7EAEE; margin: 10px 0; }
+    .forecast-total   { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: #16263F; }
     .forecast-total span:last-child { color: var(--green); }
 
     /* ── MODAL ── */
-    .modal-bd { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100; align-items: center; justify-content: center; }
+    .modal-bd { display: none; position: fixed; inset: 0; background: rgba(22,38,63,.4); z-index: 100; align-items: center; justify-content: center; }
     .modal-bd.open { display: flex; }
-    .modal { background: rgba(15,10,40,.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 20px; padding: 28px; width: 100%; max-width: 460px; border: 1px solid rgba(255,255,255,.1); }
+    .modal { background: #FFFFFF; border-radius: 20px; padding: 28px; width: 100%; max-width: 460px; border: 1px solid #E7EAEE; box-shadow: 0 20px 60px rgba(22,38,63,.1); }
     .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .modal-title { font-size: 17px; font-weight: 700; color: #fff; font-family: 'Rajdhani', sans-serif; }
-    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 24px; line-height: 1; padding: 0 4px; }
-    .modal-close:hover { color: var(--text); }
+    .modal-title { font-size: 17px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
+    .modal-close { background: none; border: none; color: #5C6A7E; cursor: pointer; font-size: 24px; line-height: 1; padding: 0 4px; }
+    .modal-close:hover { color: #16263F; }
     .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-    .modal-sol-preview { background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .modal-sol-preview { background: rgba(47,80,230,.06); border: 1px solid rgba(47,80,230,.15); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
     .modal-sol-icon { font-size: 28px; width: 48px; height: 48px; flex-shrink: 0; }
-    .modal-sol-name { font-size: 15px; font-weight: 700; color: #fff; font-family: 'Rajdhani', sans-serif; }
-    .modal-sol-tagline { font-size: 12px; color: var(--muted); font-family: 'Rajdhani', sans-serif; }
-    .modal-info { font-size: 13px; color: var(--muted); line-height: 1.6; font-family: 'Rajdhani', sans-serif; }
+    .modal-sol-name { font-size: 15px; font-weight: 700; color: #16263F; font-family: 'Sora', sans-serif; }
+    .modal-sol-tagline { font-size: 12px; color: #5C6A7E; font-family: 'Sora', sans-serif; }
+    .modal-info { font-size: 13px; color: #5C6A7E; line-height: 1.6; font-family: 'Sora', sans-serif; }
 
     /* ── TOAST ── */
     #toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
-    .toast { background: var(--card2); border-radius: 12px; padding: 12px 16px; font-size: 13px; border-left: 3px solid var(--accent); box-shadow: 0 4px 16px rgba(0,0,0,.35); animation: slide-in .2s ease; max-width: 320px; font-family: 'Rajdhani', sans-serif; }
+    .toast { background: #FFFFFF; border-radius: 12px; padding: 12px 16px; font-size: 13px; border-left: 3px solid var(--accent); box-shadow: 0 4px 16px rgba(22,38,63,.1); animation: slide-in .2s ease; max-width: 320px; font-family: 'Sora', sans-serif; color: #16263F; }
     .toast.success { border-color: var(--green); }
-    .toast.error   { border-color: #ef4444; }
+    .toast.error   { border-color: #dc2626; }
     @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; } }
 
     /* ── ANIMAÇÕES DE ENTRADA ── */
@@ -389,11 +385,16 @@
 
   <div class="login-card">
     <div class="login-logo-wrap">
-      <img src="thalamus.png" alt="Thalamus" class="login-logo" id="login-img"
-           onerror="this.classList.add('hidden');document.getElementById('login-logo-fb').classList.remove('hidden')">
-      <div class="login-logo-fallback hidden" id="login-logo-fb">🧠</div>
+      <svg width="44" height="30" viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="48" y1="32" x2="8" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="48" y1="32" x2="4" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="48" y1="32" x2="8" y2="58" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="48" cy="32" r="7" fill="white"/>
+        <line x1="48" y1="32" x2="88" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="88" cy="32" r="3.5" fill="white"/>
+      </svg>
       <div class="login-brand-wrap">
-        <span class="login-brand">Thalamus</span>
+        <span class="login-brand">THALAMUS</span>
         <span class="login-brand-badge">Portal do Cliente</span>
       </div>
     </div>
@@ -423,11 +424,16 @@
     <!-- SIDEBAR -->
     <aside>
       <div class="sidebar-header">
-        <img src="thalamus.png" alt="Thalamus" class="sidebar-logo" id="sidebar-img"
-             onerror="this.classList.add('hidden');document.getElementById('sidebar-logo-fb').classList.remove('hidden')">
-        <div class="sidebar-logo-fallback hidden" id="sidebar-logo-fb">🧠</div>
+        <svg width="36" height="24" viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="48" y1="32" x2="8" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="48" y1="32" x2="4" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="48" y1="32" x2="8" y2="58" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="48" cy="32" r="7" fill="white"/>
+          <line x1="48" y1="32" x2="88" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="88" cy="32" r="3.5" fill="white"/>
+        </svg>
         <div>
-          <div class="sidebar-brand">Thalamus</div>
+          <div class="sidebar-brand">THALAMUS</div>
           <div class="sidebar-sub">Portal do Cliente</div>
         </div>
       </div>
@@ -466,7 +472,14 @@
             <h2 id="welcome-company">Bem-vindo!</h2>
             <p>Gerencie suas soluções de IA e acompanhe os resultados.</p>
           </div>
-          <img src="thalamus-wordmark.png" alt="Thalamus" style="width:140px;height:auto;object-fit:contain">
+          <svg width="80" height="54" viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.35">
+            <line x1="48" y1="32" x2="8" y2="6" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="48" y1="32" x2="4" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="48" y1="32" x2="8" y2="58" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="48" cy="32" r="7" fill="white"/>
+            <line x1="48" y1="32" x2="88" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="88" cy="32" r="3.5" fill="white"/>
+          </svg>
         </div>
         <div class="stats-row">
           <div class="stat-card">
@@ -565,14 +578,14 @@
     </div>
     <div class="modal-info">
       Ao confirmar, nossa equipe iniciará o processo de implantação e entrará em contato em até
-      <strong style="color:#fff">48 horas úteis</strong> para alinhar os próximos passos.
+      <strong style="color:#16263F">48 horas úteis</strong> para alinhar os próximos passos.
     </div>
     <div style="margin-top:16px">
-      <label style="display:block;font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase;font-family:'Rajdhani',sans-serif">Telefone para contato</label>
+      <label style="display:block;font-size:11px;font-weight:600;color:#5C6A7E;margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase;font-family:'Sora',sans-serif">Telefone para contato</label>
       <input id="contract-phone" type="tel" placeholder="(00) 00000-0000"
-        style="width:100%;padding:10px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-size:15px;outline:none;font-family:'Rajdhani',sans-serif"
-        oninput="this.style.borderColor='rgba(124,58,237,.6)'"
-        onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+        style="width:100%;padding:10px 14px;background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;color:#16263F;font-size:15px;outline:none;font-family:'Sora',sans-serif"
+        oninput="this.style.borderColor='rgba(47,80,230,.6)'"
+        onblur="this.style.borderColor='#E7EAEE'">
     </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal('modal-contract')">Cancelar</button>
@@ -873,7 +886,7 @@ function renderProduct(contractId) {
   ]
   const timeInput = (id, val) =>
     `<input type="time" id="${id}" value="${val}"
-      style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:5px 8px;font-size:13px;font-family:'Rajdhani',sans-serif;width:92px">`
+      style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:5px 8px;font-size:13px;font-family:'Sora',sans-serif;width:92px">`
 
   const schedRows = schedDays.map(([key, lbl]) =>
     `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1e293b;flex-wrap:wrap">
@@ -881,7 +894,7 @@ function renderProduct(contractId) {
         onchange="toggleSchedDay('${key}','${contractId}',this.checked)"
         style="width:16px;height:16px;accent-color:#2563eb;cursor:pointer;flex-shrink:0">
       <label for="sched-${key}-${contractId}"
-        style="width:106px;font-size:13px;color:#e2e8f0;cursor:pointer;flex-shrink:0">${lbl}</label>
+        style="width:106px;font-size:13px;color:#16263F;cursor:pointer;flex-shrink:0">${lbl}</label>
       <div id="sched-times-${key}-${contractId}" style="display:flex;align-items:center;gap:6px">
         ${timeInput(`sched-start-${key}-${contractId}`, '08:00')}
         <span style="color:#64748b;font-size:12px">às</span>
@@ -920,7 +933,7 @@ function renderProduct(contractId) {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Mensalidade</div>
-        <div style="font-size:20px;font-weight:700;color:#e2e8f0">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
+        <div style="font-size:20px;font-weight:700;color:#16263F">R$ ${monthly.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
         ${c.extra_monthly > 0 ? '<div style="font-size:11px;color:#64748b;margin-top:2px">base + R$ ' + Number(c.extra_monthly).toLocaleString('pt-BR') + ' adicional</div>' : ''}
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
@@ -929,17 +942,20 @@ function renderProduct(contractId) {
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Contratado em</div>
-        <div style="font-size:18px;font-weight:700;color:#e2e8f0">${contracted}</div>
+        <div style="font-size:18px;font-weight:700;color:#16263F">${contracted}</div>
       </div>
       <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
         <div style="font-size:11px;color:#64748b;margin-bottom:4px">Vencimento</div>
-        <div style="font-size:18px;font-weight:700;color:#e2e8f0">${billingDay}</div>
+        <div style="font-size:18px;font-weight:700;color:#16263F">${billingDay}</div>
       </div>
     </div>` : `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
       <div>
         <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Status do Bot</div>
-        <div id="agent-online-${contractId}" style="font-size:15px">Carregando...</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div id="agent-online-${contractId}" style="font-size:15px">Carregando...</div>
+          <button id="agent-refresh-${contractId}" onclick="refreshBotStatus('${contractId}')" style="background:#F5F7F9;border:none;color:#5C6A7E;border-radius:6px;padding:4px 10px;font-size:13px;cursor:pointer" title="Verificar conexão">↻</button>
+        </div>
       </div>
     </div>
     ${['whatsapp-agent', 'whatsapp-secretary'].includes(c.solution_id) ? `
@@ -947,9 +963,9 @@ function renderProduct(contractId) {
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
       <p style="font-size:12px;color:#64748b;margin-bottom:14px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #1e293b">
-        <label style="font-size:13px;color:#e2e8f0;flex-shrink:0">Duração de cada atendimento</label>
+        <label style="font-size:13px;color:#16263F;flex-shrink:0">Duração de cada atendimento</label>
         <select id="sched-duration-${contractId}"
-          style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;color:#e2e8f0;padding:6px 10px;font-size:13px;font-family:'Rajdhani',sans-serif;cursor:pointer">
+          style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:6px;color:#16263F;padding:6px 10px;font-size:13px;font-family:'Sora',sans-serif;cursor:pointer">
           <option value="30">30 minutos</option>
           <option value="45">45 minutos</option>
           <option value="60" selected>1 hora</option>
@@ -960,7 +976,7 @@ function renderProduct(contractId) {
       </div>
       ${schedRows}
       <button onclick="saveScheduleConfig('${contractId}')"
-        style="margin-top:16px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Rajdhani',sans-serif">
+        style="margin-top:16px;background:#2F50E6;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif">
         Salvar disponibilidade
       </button>
     </div>` : ''}`}
@@ -969,15 +985,15 @@ function renderProduct(contractId) {
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
       <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Monitoramento do Bot</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
-        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;text-align:center">
+        <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Conversas</div>
-          <div id="chatbot-convs-${contractId}" style="font-size:24px;font-weight:700;color:#e2e8f0">—</div>
+          <div id="chatbot-convs-${contractId}" style="font-size:24px;font-weight:700;color:#16263F">—</div>
         </div>
-        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;text-align:center">
+        <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Agendamentos</div>
-          <div id="chatbot-appts-${contractId}" style="font-size:24px;font-weight:700;color:#e2e8f0">—</div>
+          <div id="chatbot-appts-${contractId}" style="font-size:24px;font-weight:700;color:#16263F">—</div>
         </div>
-        <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;text-align:center">
+        <div style="background:#F5F7F9;border:1px solid #E7EAEE;border-radius:10px;padding:14px;text-align:center">
           <div style="font-size:11px;color:#64748b;margin-bottom:4px">Aguard. humano</div>
           <div id="chatbot-handoff-${contractId}" style="font-size:24px;font-weight:700;color:#f59e0b">—</div>
         </div>
@@ -1449,8 +1465,8 @@ function renderChatbotAppointments(appts, el) {
         const color = stColors[a.status] ?? '#94a3b8'
         const label = stLabels[a.status] ?? a.status
         return '<tr style="border-bottom:1px solid #0f172a">'
-          + `<td style="padding:10px 12px;color:#e2e8f0;white-space:nowrap">${dt}</td>`
-          + `<td style="padding:10px 12px;color:#e2e8f0">${a.customer_name ?? a.customer_phone}</td>`
+          + `<td style="padding:10px 12px;color:#16263F;white-space:nowrap">${dt}</td>`
+          + `<td style="padding:10px 12px;color:#16263F">${a.customer_name ?? a.customer_phone}</td>`
           + `<td style="padding:10px 12px;color:#94a3b8">${a.service}</td>`
           + `<td style="padding:10px 12px"><span style="color:${color};font-size:12px;font-weight:600">${label}</span></td>`
           + '</tr>'
@@ -1459,6 +1475,34 @@ function renderChatbotAppointments(appts, el) {
 }
 
 // ── AGENTE DE IA ────────────────────────────────────────────────────
+async function refreshBotStatus(contractId) {
+  const btn = document.getElementById('agent-refresh-' + contractId)
+  if (btn) { btn.textContent = '...'; btn.disabled = true }
+  try {
+    const { data: instances } = await sb.from('whatsapp_instances')
+      .select('id').eq('company_id', company.id).eq('solution_record_id', contractId).limit(1)
+    const instanceId = instances?.[0]?.id
+    if (instanceId) {
+      const { data: { session } } = await sb.auth.getSession()
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/check-connection?id=${instanceId}`, {
+        headers: { Authorization: 'Bearer ' + session.access_token }
+      })
+      const json = await res.json()
+      if (json.status) {
+        const dot = c => `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};margin-right:8px"></span>`
+        const map = {
+          connected:    dot('#34d399') + '<span style="color:#34d399;font-weight:700">Bot Online</span>',
+          connecting:   dot('#f59e0b') + '<span style="color:#f59e0b;font-weight:700">Conectando...</span>',
+          disconnected: dot('#f87171') + '<span style="color:#f87171;font-weight:700">Bot Offline</span>',
+        }
+        const el = document.getElementById('agent-online-' + contractId)
+        if (el) el.innerHTML = map[json.status] ?? json.status
+      }
+    }
+  } catch(e) { console.error(e) }
+  if (btn) { btn.textContent = '↻'; btn.disabled = false }
+}
+
 async function loadAgentData(contractId) {
   if (!company) return
   const { data: instances } = await sb.from('whatsapp_instances')
