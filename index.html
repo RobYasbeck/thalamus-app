@@ -616,42 +616,42 @@ const SOLUTIONS = [
     pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
   },
   {
-    id: 'whatsapp-sdr',
-    name: 'Agente de IA WhatsApp — Vendas',
+    id: 'bundle-advocacia',
+    name: 'Bundle Advocacia',
     icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
     icon_class: 'img-purple',
-    tagline: 'Prospecção e vendas com inteligência artificial',
-    description: 'Um agente especializado em vendas atende seus potenciais clientes no WhatsApp, apresenta suas soluções, responde objeções e qualifica leads — encaminhando os mais aquecidos direto para você fechar o negócio.',
+    tagline: 'Atendimento inteligente para escritórios de advocacia',
+    description: 'Um agente de IA treinado para escritórios de advocacia, com agendamento, reagendamento, confirmação e suporte inicial ao cliente — configurado com a base de conhecimento do seu escritório.',
     steps: [
-      'Configuração e treinamento do agente de vendas',
-      'Integração com número WhatsApp da empresa',
-      'Ativação e monitoramento das conversas'
-    ],
-    pricing: { monthly: 499, setup: 200, note: 'Até 500 leads/mês', impl: 'Implantação em até 5 dias' }
-  },
-  {
-    id: 'whatsapp-support',
-    name: 'Agente de IA WhatsApp — Suporte',
-    icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
-    icon_class: 'img-purple',
-    tagline: 'Suporte técnico 24/7 com inteligência artificial',
-    description: 'Um agente treinado com os fluxos e base de conhecimento da sua empresa resolve dúvidas, abre chamados e oferece suporte técnico para seus clientes a qualquer hora do dia.',
-    steps: [
-      'Configuração e treinamento do agente de suporte',
+      'Configuração e treinamento do agente com a base de conhecimento do escritório',
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
     pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
   },
   {
-    id: 'whatsapp-secretary',
-    name: 'Agente de IA WhatsApp — Secretária',
+    id: 'bundle-clinicas',
+    name: 'Bundle Clínicas',
     icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
     icon_class: 'img-purple',
-    tagline: 'Recepção inteligente e atendimento inicial 24/7',
-    description: 'Uma secretária virtual que recebe seus clientes no WhatsApp, tira dúvidas gerais sobre o seu negócio e direciona para você os atendimentos que precisam de atenção humana.',
+    tagline: 'Atendimento inteligente para clínicas',
+    description: 'Um agente de IA treinado para clínicas, com agendamento, reagendamento, confirmação de consultas/exames e suporte inicial ao paciente — configurado com a base de conhecimento da sua clínica.',
     steps: [
-      'Configuração e treinamento da secretária virtual',
+      'Configuração e treinamento do agente com a base de conhecimento da clínica',
+      'Integração com número WhatsApp da empresa',
+      'Ativação e monitoramento das conversas'
+    ],
+    pricing: { monthly: 399, setup: 200, note: 'Até 500 clientes/mês', impl: 'Implantação em até 5 dias' }
+  },
+  {
+    id: 'bundle-comercio',
+    name: 'Bundle Comércio',
+    icon: '<img src="agentes-ia.png" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:screen">',
+    icon_class: 'img-purple',
+    tagline: 'Atendimento inteligente para o comércio',
+    description: 'Um agente de IA treinado para lojas e comércios, com agendamento de atendimentos, reagendamento, confirmação e suporte ao cliente — configurado com a base de conhecimento do seu negócio.',
+    steps: [
+      'Configuração e treinamento do agente com a base de conhecimento da loja',
       'Integração com número WhatsApp da empresa',
       'Ativação e monitoramento das conversas'
     ],
@@ -872,7 +872,7 @@ function renderProduct(contractId) {
   const statusSt   = { contratado:'badge-contracted', em_configuracao:'badge-contracted', em_implantacao:'badge-contracted', ativo:'badge-active' }[c.status] ?? 'badge-contracted'
   const statusLbl  = { contratado:'Contratado', em_configuracao:'Em configuração', em_implantacao:'Em implantação', ativo:'Ativo' }[c.status] ?? c.status
 
-  const AGENT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support', 'whatsapp-secretary']
+  const AGENT_SOL_IDS = ['whatsapp-agent', 'bundle-advocacia', 'bundle-clinicas', 'bundle-comercio']
   const isAgent = AGENT_SOL_IDS.includes(c.solution_id)
 
   const schedDays = [
@@ -958,7 +958,7 @@ function renderProduct(contractId) {
         </div>
       </div>
     </div>
-    ${['whatsapp-agent', 'whatsapp-secretary'].includes(c.solution_id) ? `
+    ${AGENT_SOL_IDS.includes(c.solution_id) ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
       <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Disponibilidade para Agendamentos</div>
       <p style="font-size:11px;color:#64748b;margin-bottom:12px">Defina os dias e horários em que você aceita agendamentos pelo bot.</p>
@@ -1408,7 +1408,7 @@ async function confirmContract() {
 }
 
 // ── CHATBOT (por contrato) ─────────────────────────────────────────────
-const CHATBOT_SOL_IDS = ['whatsapp-agent', 'whatsapp-sdr', 'whatsapp-support', 'whatsapp-secretary']
+const CHATBOT_SOL_IDS = ['whatsapp-agent', 'bundle-advocacia', 'bundle-clinicas', 'bundle-comercio']
 
 async function loadChatbotProductData(contractId) {
   if (!company) return
