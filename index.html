@@ -670,6 +670,20 @@ const SOLUTIONS = [
       'Ativação e monitoramento das conversas'
     ],
     pricing: { monthly: 399, setup: 200, note: 'Uso pessoal', impl: 'Implantação em até 5 dias' }
+  },
+  {
+    id: 'iris-omnichannel',
+    name: 'Iris — Omnichannel WhatsApp',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#2F50E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>',
+    icon_class: 'img-blue',
+    tagline: 'Caixa de entrada unificada para atendimento humano via WhatsApp',
+    description: 'Uma plataforma completa para sua equipe atender clientes pelo WhatsApp diretamente no navegador — sem usar WhatsApp Web. Conversas em tempo real, histórico completo, respostas rápidas e múltiplos operadores na mesma caixa de entrada.',
+    steps: [
+      'Cadastro do número WhatsApp da empresa',
+      'Configuração dos operadores e respostas rápidas',
+      'Acesso imediato ao inbox via iris.yaslabs.dev.br'
+    ],
+    pricing: { monthly: 299, setup: 150, note: 'Operadores ilimitados', impl: 'Configuração em até 2 dias' }
   }
 ]
 
@@ -994,6 +1008,17 @@ function renderProduct(contractId) {
         Salvar disponibilidade
       </button>
     </div>` : ''}`}
+
+    ${IRIS_SOL_IDS.includes(c.solution_id) ? `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Iris — Inbox WhatsApp</div>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">Acesse sua caixa de entrada para responder mensagens do WhatsApp com sua equipe.</p>
+      <a href="https://iris.yaslabs.dev.br" target="_blank"
+        style="display:inline-flex;align-items:center;gap:8px;background:#2F50E6;color:#fff;text-decoration:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;font-family:'Sora',sans-serif">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        Abrir Iris
+      </a>
+    </div>` : ''}
 
     ${CHATBOT_SOL_IDS.includes(c.solution_id) ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
@@ -1423,6 +1448,7 @@ async function confirmContract() {
 
 // ── CHATBOT (por contrato) ─────────────────────────────────────────────
 const CHATBOT_SOL_IDS = ['whatsapp-agent', 'bundle-advocacia', 'bundle-clinicas', 'bundle-comercio', 'assistente-pessoal']
+const IRIS_SOL_IDS = ['iris-omnichannel']
 
 async function loadChatbotProductData(contractId) {
   if (!company) return
