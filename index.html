@@ -736,7 +736,7 @@ async function loadCompany() {
 
 async function loadContracts() {
   if (!company) return
-  const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id)
+  const { data } = await sb.from('company_solutions').select('*').eq('company_id', company.id).neq('status', 'cancelado')
   myContracts = data || []
   const { data: insts } = await sb.from('whatsapp_instances')
     .select('instance_name, solution_record_id').eq('company_id', company.id)
