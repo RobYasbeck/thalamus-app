@@ -1079,17 +1079,11 @@ function buildSolCard(s, compact) {
       <div class="sol-pricing">
         <div class="price-item">
           <div class="price-label">Mensalidade</div>
-          ${contract
-            ? `<div class="price-value">R$ ${monthlyOf(contract, s).toLocaleString('pt-BR')}<span class="price-period">/mês</span></div>`
-            : `<div class="price-value" style="font-size:18px">Sob consulta</div>`}
+          <div class="price-value">Sob consulta</div>
         </div>
         <div class="price-item">
           <div class="price-label">Implantação</div>
-          ${contract
-            ? (setupOf(contract, s) === 0
-                ? `<div class="price-value" style="color:var(--green)">Isento</div>`
-                : `<div class="price-value">R$ ${setupOf(contract, s).toLocaleString('pt-BR')}<span class="price-period"> único</span></div>`)
-            : `<div class="price-value" style="font-size:18px">Sob consulta</div>`}
+          <div class="price-value">Sob consulta</div>
         </div>
         ${s.pricing.note ? `<div class="price-note">* ${s.pricing.note}</div>` : ''}
         ${s.pricing.impl ? `<div class="price-note">⏱ ${s.pricing.impl}</div>` : ''}
